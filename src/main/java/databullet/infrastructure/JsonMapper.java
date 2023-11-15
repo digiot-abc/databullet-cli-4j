@@ -1,5 +1,6 @@
 package databullet.infrastructure;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -13,11 +14,13 @@ public class JsonMapper {
         this.objectMapper = new ObjectMapper();
     }
 
-    public <T> T mapJsonToObject(String json, Class<T> clazz) throws Exception {
+    @SneakyThrows
+    public <T> T mapJsonToObject(String json, Class<T> clazz) {
         return objectMapper.readValue(json, clazz);
     }
 
-    public <T> T mapJsonToObject(Path jsonPath, Class<T> clazz) throws Exception {
+    @SneakyThrows
+    public <T> T mapJsonToObject(Path jsonPath, Class<T> clazz) {
         return objectMapper.readValue(Files.readString(jsonPath, Charset.defaultCharset()), clazz);
     }
 }
