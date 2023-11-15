@@ -1,0 +1,10 @@
+{
+  "relations": [
+    {
+      "fromTable": "orders",
+      "fromColumn": "user_id",
+      "toTable": "users",
+      "toColumn": "id"
+    }
+  ]
+}
