@@ -1,5 +1,6 @@
 package databullet.domain.definition.table;
 
+import databullet.domain.definition.data.DataSpecColumn;
 import lombok.Data;
 
 import java.util.List;
@@ -17,27 +18,7 @@ public class Column {
         digit = new ColumnDigit(size);
     }
 
-    @Data
-    static class ColumnDigit {
-
-        private Integer digit;
-        private Integer afterDecimalPointDigit;
-
-        ColumnDigit(Object size) {
-            if (size instanceof Integer) {
-                this.digit = (Integer) size;
-            } else if (size instanceof List) {
-                List<Integer> list = (List<Integer>) size;
-                if (list.size() != 2) {
-                    throw new NumberFormatException();
-                }
-                this.digit = list.get(0);
-                this.afterDecimalPointDigit = list.get(1);
-            }
-        }
-    }
-
-    public boolean is(databullet.domain.definition.data.Column column) {
-        return this.name.equals(column.getName());
+    public boolean is(DataSpecColumn dataSpecColumn) {
+        return this.name.equals(dataSpecColumn.getName());
     }
 }

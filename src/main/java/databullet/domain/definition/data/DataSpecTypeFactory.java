@@ -1,7 +1,7 @@
-package databullet.domain.definition.data.type;
+package databullet.domain.definition.data;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import databullet.domain.definition.data.type.options.Options;
+import databullet.domain.definition.data.options.Options;
 import databullet.infrastructure.JsonMapper;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
@@ -10,22 +10,22 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Function;
 
-public class DataTypeFactory {
+public class DataSpecTypeFactory {
 
     private static final JsonMapper mapper = new JsonMapper();
 
     private static HashMap<String, Function<String, Options>> optionsMap;
 
     @SneakyThrows
-    public static DataType create(String name, String options) {
+    public static DataSpecType create(String name, String options) {
 
-        DataType dataType = new DataType();
-        dataType.setName(name);
+        DataSpecType dataSpecType = new DataSpecType();
+        dataSpecType.setName(name);
         if (getOptionsMap().containsKey(name)) {
-            dataType.setOptions(getOptionsMap().get(name).apply(options));
+            dataSpecType.setOptions(getOptionsMap().get(name).apply(options));
         }
 
-        return dataType;
+        return dataSpecType;
     }
 
     private static HashMap<String, Function<String, Options>> getOptionsMap() {

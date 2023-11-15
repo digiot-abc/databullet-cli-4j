@@ -1,5 +1,5 @@
 {
-  "scale": 0.001,
+  "scale": 0.1,
   "tables": [
     {
       "name": "users",
@@ -26,7 +26,9 @@
         },
         {
           "name": "email",
-          "type": "email"
+          "type": {
+            "name": "email"
+          }
         }
       ]
     },
@@ -66,12 +68,10 @@
         {
           "name": "amount",
           "type": {
-            "name": "decimal",
+            "name": "numeric",
             "options": {
-              "range": [
-                100,
-                10000
-              ]
+              "min": 100,
+              "max": 10000
             }
           }
         }

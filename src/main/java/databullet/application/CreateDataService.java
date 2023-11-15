@@ -5,6 +5,7 @@ import databullet.domain.definition.table.RelationInfo;
 import databullet.domain.definition.table.TableDefinition;
 import databullet.domain.generate.GenerateProcessor;
 import databullet.domain.generate.GenerateStore;
+import databullet.domain.write.CSVWriter;
 import databullet.infrastructure.JsonMapper;
 import lombok.SneakyThrows;
 
@@ -31,7 +32,7 @@ public class CreateDataService {
         // 生成を行う
         GenerateProcessor processor = new GenerateProcessor(store);
 
-        processor.generate(tableDef);
+        processor.generate(tableDef, new CSVWriter());
 
         System.out.println(System.currentTimeMillis() - st);
     }

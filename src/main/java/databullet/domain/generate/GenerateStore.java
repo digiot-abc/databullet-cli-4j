@@ -1,10 +1,13 @@
 package databullet.domain.generate;
 
+import databullet.domain.definition.data.DataSpecColumn;
+import databullet.domain.definition.data.DataSpecTable;
 import databullet.domain.definition.table.Column;
 import databullet.domain.definition.data.DataSpecDefinition;
 import databullet.domain.definition.table.RelationInfo;
 import databullet.domain.definition.table.Table;
 import databullet.domain.definition.table.TableDefinition;
+import databullet.domain.generate.table.GenerateColumn;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +15,8 @@ import java.util.stream.Collectors;
 
 public class GenerateStore {
 
-    Map<Table, databullet.domain.definition.data.Table> tableMap = new HashMap<>();
-    Map<Column, databullet.domain.definition.data.Column> columnMap = new HashMap<>();
+    Map<Table, DataSpecTable> tableMap = new HashMap<>();
+    Map<Column, GenerateColumn> generateColumnMap = new HashMap<>();
 
     public DataSpecDefinition dataSpecDefinition;
 
@@ -21,32 +24,36 @@ public class GenerateStore {
 
         this.dataSpecDefinition = dataSpec;
 
-        Map<String, databullet.domain.definition.data.Table> tableNameMap =
+        Map<String, DataSpecTable> tableNameMap =
                 dataSpec.getTables().stream().collect(Collectors.toMap(t -> t.getName(), t -> t));
 
         for (Table table : tableDef.getTables()) {
 
-            databullet.domain.definition.data.Table dataTable = tableNameMap.getOrDefault(table.getName(), null);
-            tableMap.put(table, dataTable);
+            DataSpecTable dataDataSpecTable = tableNameMap.getOrDefault(table.getName(), null);
+            tableMap.put(table, dataDataSpecTable);
 
-            if (dataTable != null) {
-                Map<String, databullet.domain.definition.data.Column> dataColumnMap =
-                        dataTable.getColumns().stream().collect(Collectors.toMap(c -> c.getName(), c -> c));
+            if (dataDataSpecTable != null) {
+                Map<String, DataSpecColumn> dataColumnMap =
+                        dataDataSpecTable.getColumns().stream().collect(Collectors.toMap(c -> c.getName(), c -> c));
 
                 for (Column column : table.getColumns()) {
-                    databullet.domain.definition.data.Column dataColumn = dataColumnMap.getOrDefault(column.getName(), null);
-                    columnMap.put(column, dataColumn);
+                    DataSpecColumn dataDataSpecColumn = dataColumnMap.getOrDefault(column.getName(), null);
+                    generateColumnMap.put(column, new GenerateColumn(column, dataDataSpecColumn));
                 }
             }
         }
     }
 
-    public databullet.domain.definition.data.Table getDataTable(Table tableTable) {
+    public GenerateColumn getGenerateColumn(Column column) {
+        return generateColumnMap.get(column);
+    }
+
+    public DataSpecTable getDataTable(Table tableTable) {
         return tableMap.get(tableTable);
     }
 
-    public databullet.domain.definition.data.Column getDataColumn(Column tableColumn) {
-        return columnMap.get(tableColumn);
+    public DataSpecColumn getDataColumn(Column tableColumn) {
+        return generateColumnMap.get(tableColumn).getDataSpecColumn();
     }
 
     class DefinitionChain {

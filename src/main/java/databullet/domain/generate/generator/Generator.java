@@ -1,4 +1,4 @@
-package databullet.domain.generate;
+package databullet.domain.generate.generator;
 
 public interface Generator<T> {
 

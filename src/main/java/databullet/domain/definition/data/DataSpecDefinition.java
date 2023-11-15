@@ -8,5 +8,5 @@ import java.util.List;
 public class DataSpecDefinition {
 
     private Double scale;
-    private List<Table> tables;
+    private List<DataSpecTable> tables;
 }

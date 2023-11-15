@@ -1,19 +1,17 @@
-package databullet.domain.definition.data.type;
+package databullet.domain.definition.data;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import databullet.domain.definition.data.type.DataType;
-import databullet.domain.definition.data.type.DataTypeFactory;
 
 import java.io.IOException;
 
-public class DataTypeDeserializer extends JsonDeserializer<DataType> {
+public class DataSpecTypeDeserializer extends JsonDeserializer<DataSpecType> {
 
     @Override
-    public DataType deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+    public DataSpecType deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 
         JsonNode node = parser.readValueAsTree();
 
@@ -30,6 +28,6 @@ public class DataTypeDeserializer extends JsonDeserializer<DataType> {
             }
         }
 
-        return new DataTypeFactory().create(name, options.toString());
+        return DataSpecTypeFactory.create(name, options.toString());
     }
 }

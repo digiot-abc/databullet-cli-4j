@@ -1,4 +1,5 @@
 package databullet.infrastructure;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
@@ -16,6 +17,9 @@ public class JsonMapper {
 
     @SneakyThrows
     public <T> T mapJsonToObject(String json, Class<T> clazz) {
+        if ("".equals(json)) {
+            return clazz.getConstructor().newInstance();
+        }
         return objectMapper.readValue(json, clazz);
     }
 

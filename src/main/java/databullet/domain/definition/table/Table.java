@@ -1,6 +1,7 @@
 package databullet.domain.definition.table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import databullet.domain.definition.data.DataSpecTable;
 import lombok.Data;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class Table {
     @JsonIgnore
     private Integer columnCount;
 
-    public boolean is(databullet.domain.definition.data.Table table) {
-        return this.name.equals(table.getName());
+    public boolean is(DataSpecTable dataSpecTable) {
+        return this.name.equals(dataSpecTable.getName());
     }
 
     public Integer getColumnCount() {

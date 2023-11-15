@@ -1,11 +1,12 @@
-package databullet.domain.generate;
+package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.type.options.DateOptions;
+import databullet.domain.definition.data.options.DateOptions;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ThreadLocalRandom;
 
+@GenerateOptions(DateOptions.class)
 public class DateGenerator implements Generator<String> {
 
     private long start = LocalDate.of(2000, 1, 1).toEpochDay();
