@@ -27,6 +27,7 @@ public class CreateDataService {
         // ストアに情報を保管する
         GenerateStore store = new GenerateStore(tableDef, relationInfo, dataSpec);
 
+        // 計測
         long st = System.currentTimeMillis();
 
         // 生成を行う
@@ -34,6 +35,6 @@ public class CreateDataService {
 
         processor.generate(tableDef, new CSVWriter());
 
-        System.out.println(System.currentTimeMillis() - st);
+        System.out.println("Execute time: " + (System.currentTimeMillis() - st) + "ms");
     }
 }

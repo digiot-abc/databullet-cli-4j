@@ -3,18 +3,52 @@
     {
       "name": "users",
       "columns": [
-        {"name": "id", "type": "int", "primaryKey": true},
-        {"name": "username", "type": "varchar", "digit": 50, "nullable": false},
-        {"name": "email", "type": "varchar", "digit": 100, "nullable": false}
+        {
+          "name": "id",
+          "type": "int",
+          "primaryKey": true
+        },
+        {
+          "name": "username",
+          "type": "varchar",
+          "digit": 50,
+          "nullable": false
+        },
+        {
+          "name": "email",
+          "type": "varchar",
+          "digit": 100,
+          "nullable": false
+        }
       ]
     },
     {
       "name": "orders",
       "columns": [
-        {"name": "id", "type": "int", "primaryKey": true},
-        {"name": "user_id", "type": "int", "nullable": false},
-        {"name": "order_date", "type": "datetime", "nullable": false},
-        {"name": "amount", "type": "decimal", "digit": [10, 2], "nullable": false}
+        {
+          "name": "id",
+          "type": "int",
+          "primaryKey": true
+        },
+        {
+          "name": "user_id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "order_date",
+          "type": "datetime",
+          "nullable": false
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "digit": [
+            10,
+            2
+          ],
+          "nullable": false
+        }
       ]
     }
   ]

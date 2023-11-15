@@ -1,12 +1,12 @@
 package databullet.domain.generate;
 
-import databullet.domain.definition.data.DataSpecColumn;
 import databullet.domain.definition.data.DataSpecTable;
 import databullet.domain.definition.table.Column;
 import databullet.domain.definition.table.Table;
 import databullet.domain.definition.table.TableDefinition;
-import databullet.domain.generate.generator.DataGeneratorFactory;
+import databullet.domain.generate.generator.GeneratorFactory;
 import databullet.domain.generate.table.GenerateColumn;
+import databullet.domain.generate.table.GenerateTable;
 import databullet.domain.write.DataRecord;
 import databullet.domain.write.DataWriter;
 import lombok.SneakyThrows;
@@ -23,6 +23,10 @@ public class GenerateProcessor {
 
     GenerateStore store;
 
+    static long maxMemory = Runtime.getRuntime().maxMemory();
+
+    static long batchSize = maxMemory / 100;
+
     public GenerateProcessor(GenerateStore store) {
         // TODO スレッド数などの定義
         this.store = store;
@@ -30,25 +34,20 @@ public class GenerateProcessor {
 
     @SneakyThrows
     public void generate(TableDefinition tableDef, DataWriter<?> writer) {
-
         List<Table> tables = tableDef.getTables();
         for (Table table : tables) {
-            generate(table, store.getDataTable(table), writer);
+            generate(table, store.getGenerateTable(table), writer);
         }
     }
 
-
-    public void generate(Table table, DataSpecTable dataDataSpecTable, DataWriter<?> writer) {
-
-        long maxMemory = Runtime.getRuntime().maxMemory();
-        long batchSize = maxMemory / 100; // 仮の計算式
+    public void generate(Table table, GenerateTable generateTable, DataWriter<?> writer) {
 
         // 並列処理用
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         Future<String>[] futures = new Future[table.getColumnCount()];
 
         // 生成行数の計算
-        double rowCount = dataDataSpecTable.getRowCount() * store.dataSpecDefinition.getScale();
+        long rowCount = (long) (generateTable.getDataSpecTable().getRowCount() * store.dataSpecDefinition.getScale());
 
         List<DataRecord> records = new ArrayList<>();
         for (int i = 0; i < rowCount; i++) {
@@ -70,12 +69,14 @@ public class GenerateProcessor {
             records.add(record);
 
             if (records.size() >= batchSize) {
+                System.out.println(table.getName() + " table : " + i + "/" + rowCount);
                 writer.write(Paths.get("TODO"), records);
                 records.clear();
             }
         }
 
         if (records.size() > 0) {
+            System.out.println(table.getName() + " table : " + rowCount + "/" + rowCount);
             writer.write(Paths.get("TODO"), records);
         }
 
@@ -84,6 +85,6 @@ public class GenerateProcessor {
 
     public Object generate(Column tableColumn) {
         GenerateColumn generateColumn = store.getGenerateColumn(tableColumn);
-        return DataGeneratorFactory.create(generateColumn).generate();
+        return GeneratorFactory.create(generateColumn).generate();
     }
 }

@@ -5,11 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@JsonTypeName("numeric")
+@JsonTypeName("int")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NumericOptions implements Options {
+public class IntOptions implements Options {
 
   private Long min;
   private Long max;

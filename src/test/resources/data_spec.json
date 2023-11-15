@@ -1,5 +1,5 @@
 {
-  "scale": 0.1,
+  "scale": 0.01,
   "tables": [
     {
       "name": "users",
@@ -68,7 +68,7 @@
         {
           "name": "amount",
           "type": {
-            "name": "numeric",
+            "name": "int",
             "options": {
               "min": 100,
               "max": 10000

@@ -7,7 +7,7 @@ public class CSVWriter implements DataWriter<Path> {
 
   @Override
   public Path write(Path output, List<DataRecord> record) {
-    System.out.println(record);
+//    System.out.println(record);
     return null;
   }
 }

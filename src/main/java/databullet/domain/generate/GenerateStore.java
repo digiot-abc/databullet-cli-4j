@@ -8,6 +8,7 @@ import databullet.domain.definition.table.RelationInfo;
 import databullet.domain.definition.table.Table;
 import databullet.domain.definition.table.TableDefinition;
 import databullet.domain.generate.table.GenerateColumn;
+import databullet.domain.generate.table.GenerateTable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class GenerateStore {
 
-    Map<Table, DataSpecTable> tableMap = new HashMap<>();
+    Map<Table, GenerateTable> tableMap = new HashMap<>();
     Map<Column, GenerateColumn> generateColumnMap = new HashMap<>();
 
     public DataSpecDefinition dataSpecDefinition;
@@ -30,7 +31,7 @@ public class GenerateStore {
         for (Table table : tableDef.getTables()) {
 
             DataSpecTable dataDataSpecTable = tableNameMap.getOrDefault(table.getName(), null);
-            tableMap.put(table, dataDataSpecTable);
+            tableMap.put(table, new GenerateTable(table, dataDataSpecTable));
 
             if (dataDataSpecTable != null) {
                 Map<String, DataSpecColumn> dataColumnMap =
@@ -48,12 +49,8 @@ public class GenerateStore {
         return generateColumnMap.get(column);
     }
 
-    public DataSpecTable getDataTable(Table tableTable) {
-        return tableMap.get(tableTable);
-    }
-
-    public DataSpecColumn getDataColumn(Column tableColumn) {
-        return generateColumnMap.get(tableColumn).getDataSpecColumn();
+    public GenerateTable getGenerateTable(Table table) {
+        return tableMap.get(table);
     }
 
     class DefinitionChain {

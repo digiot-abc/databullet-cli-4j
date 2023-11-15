@@ -9,13 +9,15 @@ import java.util.concurrent.ThreadLocalRandom;
 @GenerateOptions(DateOptions.class)
 public class DateGenerator implements Generator<String> {
 
-    private long start = LocalDate.of(2000, 1, 1).toEpochDay();
-    private long end = LocalDate.of(2023, 1, 1).toEpochDay();
+    private long start;
+    private long end;
 
     private DateTimeFormatter formatter;
 
     public DateGenerator(DateOptions dateOptions) {
         this.formatter = dateOptions.getFormatter();
+        this.start = dateOptions.getStart().toEpochDay();
+        this.end = dateOptions.getEnd().toEpochDay();
     }
 
     @Override

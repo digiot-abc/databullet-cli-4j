@@ -12,19 +12,20 @@ import lombok.Data;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@JsonTypeName("date")
+@JsonTypeName("datetime")
 @Data
 @AllArgsConstructor
-public class DateOptions implements Options {
+public class DateTimeOptions implements Options {
 
-    private LocalDate start;
+    private LocalDateTime start;
 
-    private LocalDate end;
+    private LocalDateTime end;
 
-    public DateOptions() {
-        end = LocalDate.now();
+    public DateTimeOptions() {
+        end = LocalDateTime.now();
         start = end.minusYears(3);
         formatter = DateTimeFormatter.ISO_DATE;
     }
@@ -37,21 +38,21 @@ public class DateOptions implements Options {
     }
 
     public void setStart(String start) {
-        this.start = LocalDate.parse(start, formatter);
+        this.start = LocalDateTime.parse(start, formatter);
     }
 
     public void setEnd(String end) {
-        this.end = LocalDate.parse(end, formatter);
+        this.end = LocalDateTime.parse(end, formatter);
     }
 }
 
-class DateDeserializer extends JsonDeserializer<DateOptions> {
+class DateTimeDeserializer extends JsonDeserializer<DateTimeOptions> {
 
     @Override
-    public DateOptions deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+    public DateTimeOptions deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 
         JsonNode node = parser.readValueAsTree();
-        DateOptions options = new DateOptions();
+        DateTimeOptions options = new DateTimeOptions();
 
         if (node instanceof ObjectNode) {
             ObjectNode objectNode = (ObjectNode) node;
