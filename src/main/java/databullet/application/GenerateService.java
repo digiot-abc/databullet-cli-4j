@@ -1,36 +1,38 @@
 package databullet.application;
 
-import databullet.domain.definition.generate.GenerateDefinitions;
+import databullet.domain.definition.generate.GenerateDefinition;
 import databullet.domain.generate.GenerateProcessor;
 import databullet.domain.generate.GenerateStore;
+import databullet.domain.generate.persistance.CSVPersistence;
 import databullet.domain.generate.persistance.Persistence;
 import databullet.domain.generate.persistance.PrintPersistence;
 
-import java.util.concurrent.ExecutionException;
+import java.nio.file.Path;
 
 public class GenerateService {
 
-    public void generatePrint(GenerateDefinitions definitions) {
+    public void generateCsv(GenerateDefinition definitions, Path outputBase) {
+        generate(definitions, new CSVPersistence(outputBase));
+    }
+
+    public void generatePrint(GenerateDefinition definitions) {
         generate(definitions, new PrintPersistence());
     }
 
-    void generate(GenerateDefinitions definitions, Persistence persistence) {
+    void generate(GenerateDefinition definitions, Persistence persistence) {
 
         System.out.println(definitions.getTableDef());
         System.out.println(definitions.getDataSpec());
-        System.out.println(definitions.getRelationInfo());
 
         // 計測
         long st = System.currentTimeMillis();
 
         // 生成を行う
-        GenerateStore store = new GenerateStore();
-        GenerateProcessor processor = new GenerateProcessor(store);
         try {
+            GenerateStore store = new GenerateStore();
+            GenerateProcessor processor = new GenerateProcessor(store);
             processor.generate(definitions, persistence);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

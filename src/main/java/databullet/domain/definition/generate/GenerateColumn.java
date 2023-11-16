@@ -4,6 +4,7 @@ import databullet.domain.definition.data.DataSpecColumn;
 import databullet.domain.definition.table.Column;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class GenerateColumn {
 
   private GenerateColumn relationParent;
 
-  private List<GenerateColumn> relationChildren;
+  private List<GenerateColumn> relationChildren = new ArrayList<>();
 
   private GenerateTable ownerTable;
 
@@ -32,6 +33,10 @@ public class GenerateColumn {
   public int hashCode() {
     // relationParentとrelationChildrenを含まないハッシュコードの計算
     // ownerTableも循環参照を避けるために除外しています
-    return Objects.hash(name, tableColumn.getName(), dataSpecColumn.getName());
+    return Objects.hash(ownerTable.getName(), name, tableColumn.getName(), dataSpecColumn.getName());
+  }
+
+  public boolean hasParent() {
+    return relationParent != null;
   }
 }

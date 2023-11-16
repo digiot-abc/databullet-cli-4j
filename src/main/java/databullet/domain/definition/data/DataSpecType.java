@@ -11,17 +11,5 @@ public class DataSpecType {
 
     private String name;
     private Options options;
-
-    public static DataSpecType empty() {
-
-        StringOptions options = new StringOptions();
-        options.setLength(0);
-
-        DataSpecType dataSpecType = new DataSpecType();
-        dataSpecType.setName("");
-        dataSpecType.setOptions(options);
-
-        return dataSpecType;
-    }
 }
 

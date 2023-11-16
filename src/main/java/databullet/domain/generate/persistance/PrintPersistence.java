@@ -11,12 +11,12 @@ public class PrintPersistence implements Persistence {
 
     @Override
     public void persist(GenerateTable table, List<GenerateRecord> records) {
-        System.out.println(table.getName() + ": output");
-        for (GenerateRecord record : records) {
-            String csvRecord = record.getData().stream()
-                    .map(value -> value == null ? "" : value.toString())
-                    .collect(Collectors.joining(","));
-            System.out.println(csvRecord);
-        }
+        System.out.println(table.getName());
+//        for (GenerateRecord record : records) {
+//            String csvRecord = record.getData().values().stream()
+//                    .map(value -> value == null ? "" : value.toString())
+//                    .collect(Collectors.joining(","));
+//            System.out.println(csvRecord);
+//        }
     }
 }

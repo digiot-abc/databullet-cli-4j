@@ -1,6 +1,5 @@
 package databullet.domain.definition.data;
 
-import databullet.domain.definition.table.Column;
 import lombok.Data;
 
 @Data
@@ -9,10 +8,13 @@ public class DataSpecColumn {
     private String name;
     private DataSpecType type;
 
-    public static DataSpecColumn empty() {
+    public static DataSpecColumn empty(String name) {
         DataSpecColumn dataSpecColumn = new DataSpecColumn();
-        dataSpecColumn.setName("");
-        dataSpecColumn.setType(DataSpecType.empty());
+        dataSpecColumn.setName(name);
         return dataSpecColumn;
+    }
+
+    public boolean isEmpty() {
+        return type == null;
     }
 }

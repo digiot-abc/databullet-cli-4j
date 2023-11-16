@@ -11,15 +11,18 @@ import java.util.Objects;
 @Data
 public class GenerateTable {
 
+  private GenerateTable parentTable;
+
+  private List<GenerateTable> childTables = new ArrayList<>();
+
   private List<GenerateColumn> columns;
 
   private String name;
 
-  private Long rowCount;
+  private Integer rowCount;
 
   private Integer columnCount;
 
-  // 生成元定義
   private Table table;
 
   private DataSpecTable dataSpecTable;
@@ -42,6 +45,6 @@ public class GenerateTable {
 
   @Override
   public int hashCode() {
-    return name != null ? name.hashCode() : 0;
+    return name.hashCode();
   }
 }

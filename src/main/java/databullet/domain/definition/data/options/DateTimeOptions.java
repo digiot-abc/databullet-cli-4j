@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 @JsonTypeName("datetime")
 @Data
 @AllArgsConstructor
+@JsonDeserialize(using = DateTimeOptions.DateTimeDeserializer.class)
 public class DateTimeOptions implements Options {
 
     private LocalDateTime start;
@@ -43,29 +45,30 @@ public class DateTimeOptions implements Options {
     public void setEnd(String end) {
         this.end = LocalDateTime.parse(end, formatter);
     }
-}
 
-class DateTimeDeserializer extends JsonDeserializer<DateTimeOptions> {
+    public static class DateTimeDeserializer extends JsonDeserializer<DateTimeOptions> {
 
-    @Override
-    public DateTimeOptions deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+        @Override
+        public DateTimeOptions deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 
-        JsonNode node = parser.readValueAsTree();
-        DateTimeOptions options = new DateTimeOptions();
+            JsonNode node = parser.readValueAsTree();
+            DateTimeOptions options = new DateTimeOptions();
 
-        if (node instanceof ObjectNode) {
-            ObjectNode objectNode = (ObjectNode) node;
-            if (objectNode.has("format")) {
-                options.setEnd(objectNode.get("format").asText());
+            if (node instanceof ObjectNode) {
+                ObjectNode objectNode = (ObjectNode) node;
+                if (objectNode.has("format")) {
+                    options.setEnd(objectNode.get("format").asText());
+                }
+                if (objectNode.has("start")) {
+                    options.setStart(objectNode.get("start").asText());
+                }
+                if (objectNode.has("end")) {
+                    options.setEnd(objectNode.get("end").asText());
+                }
             }
-            if (objectNode.has("start")) {
-                options.setStart(objectNode.get("start").asText());
-            }
-            if (objectNode.has("end")) {
-                options.setEnd(objectNode.get("end").asText());
-            }
+
+            return options;
         }
-
-        return options;
     }
 }
+

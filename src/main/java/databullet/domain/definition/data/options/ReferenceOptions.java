@@ -9,4 +9,8 @@ public class ReferenceOptions implements Options {
 
     private String referencedTable;
     private String referencedColumn;
+
+    public String getFQDNReferencedColumnName() {
+        return String.join(".", referencedTable, referencedColumn);
+    }
 }

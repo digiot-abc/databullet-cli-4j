@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Function;
 
-public final class CachingGeneratorFactory {
+public final class GeneratorFactory {
 
   private static final HashMap<GenerateColumn, Generator<?, ?>> generatorMap = new HashMap<>();
 
@@ -46,7 +46,7 @@ public final class CachingGeneratorFactory {
       DataSpecColumn dataSpecColumn = column.getDataSpecColumn();
 
       // データ生成仕様からデータ生成
-      if (column.getDataSpecColumn() != null && dataSpecColumn.getType() != null) {
+      if (!column.getDataSpecColumn().isEmpty()) {
         Class<? extends Options> optionsClassInput = dataSpecColumn.getType().getOptions().getClass();
         generatorMap.put(column, generatorFactoryMap.get(optionsClassInput).apply(column.getDataSpecColumn()));
         return generatorMap.get(column);

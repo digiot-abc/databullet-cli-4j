@@ -1,18 +1,15 @@
 package databullet.domain.generate;
 
-import databullet.domain.definition.generate.GenerateDefinitions;
+import databullet.domain.definition.generate.GenerateDefinition;
 import databullet.domain.definition.generate.GenerateRelationGroup;
-import databullet.domain.generate.generator.CachingGeneratorFactory;
+import databullet.domain.generate.generator.GeneratorFactory;
 import databullet.domain.definition.generate.GenerateColumn;
 import databullet.domain.definition.generate.GenerateTable;
 import databullet.domain.generate.persistance.Persistence;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class GenerateProcessor {
 
@@ -26,54 +23,109 @@ public class GenerateProcessor {
         this.store = store;
     }
 
-    public void generate(GenerateDefinitions definitions, Persistence persistence) throws ExecutionException, InterruptedException {
+    public void generate(GenerateDefinition definitions, Persistence persistence) {
 
-        for (GenerateRelationGroup relationGroup : definitions.getRelationGroups()) {
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-            for (GenerateTable table : relationGroup.getGenTables()) {
-                generate(table, persistence);
+        try {
+            definitions.getRelationGroups().stream().parallel().forEach(defGroup -> {
+                for (GenerateTable table : defGroup.getGenTables()) {
+                    try {
+                        generate(table, persistence, executorService);
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } finally {
+                        store.finish(table);
+                    }
+                }
+            });
+        } finally {
+            if (!executorService.isShutdown()) {
+                executorService.shutdown();
             }
         }
     }
 
-    public void generate(GenerateTable generateTable, Persistence persistence) throws ExecutionException, InterruptedException {
+    public void generate(GenerateTable generateTable, Persistence persistence, ExecutorService executorService)
+            throws ExecutionException, InterruptedException {
+        generate(generateTable, persistence, executorService, 0, generateTable.getRowCount());
+    }
 
-        // 並列処理用
-        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        Future<String>[] futures = new Future[generateTable.getColumnCount()];
+    public void generate(GenerateTable generateTable, Persistence persistence,
+                         ExecutorService executorService, int rowOffsetIndex, int rowLimit)
+            throws ExecutionException, InterruptedException {
 
-        long rowCount = generateTable.getRowCount();
-        List<GenerateRecord> records = new ArrayList<>();
-        for (int i = 0; i < rowCount; i++) {
-
-            int index = 0;
-            for (GenerateColumn column : generateTable.getColumns()) {
-                futures[index++] = executorService.submit(() -> generate(column).toString());
-            }
-
-            GenerateRecord record = new GenerateRecord();
-            for (Future<String> future : futures) {
-                record.append(future.get());
-            }
-
-            records.add(record);
-
-            if (records.size() >= batchSize) {
-                System.out.println(generateTable.getName() + " table : " + i + "/" + rowCount);
-                persistence.persist(generateTable, records);
-                records.clear();
-            }
+        if (store.isFinished(generateTable)) {
+            return;
         }
 
-        if (records.size() > 0) {
-            System.out.println(generateTable.getName() + " table : " + rowCount + "/" + rowCount);
+        persistence.persist(generateTable, List.of(GenerateRecord.header(generateTable)));
+
+        List<GenerateRecord> records = store.getRecords(generateTable);
+        int rowCount = generateTable.getRowCount();
+
+        try {
+            for (int i = rowOffsetIndex; i < rowLimit; i++) {
+                List<CompletableFuture<String>> futureList = new ArrayList<>();
+
+                final int index = i;
+                for (GenerateColumn column : generateTable.getColumns()) {
+                    futureList.add(CompletableFuture.supplyAsync(() -> {
+                        Object value = column.hasParent() ?
+                                store.getRecords(generateTable.getParentTable()).get(index).getData().get(column.getRelationParent()) :
+                                generate(column);
+                        return value.toString();
+                    }, executorService));
+                }
+
+                GenerateRecord record = new GenerateRecord();
+                for (CompletableFuture<String> future : futureList) {
+                    record.append(generateTable.getColumns().get(futureList.indexOf(future)), future.get());
+                }
+
+                records.add(record);
+
+                // 子テーブルの生成
+                for (GenerateTable childTable : generateTable.getChildTables()) {
+                    generate(childTable, persistence, executorService, i, i + 1);
+                }
+
+                handleBatchPersistence(i, rowCount, records, generateTable, persistence);
+            }
+
+            for (GenerateTable childTable : generateTable.getChildTables()) {
+                generate(childTable, persistence, executorService, rowOffsetIndex, rowLimit);
+            }
+            finalBatchPersistence(rowCount, records, generateTable, persistence);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (rowLimit >= rowCount) {
+                store.finish(generateTable);
+            }
+        }
+    }
+
+    private void handleBatchPersistence(int currentIndex, int totalRowCount,
+                                        List<GenerateRecord> records, GenerateTable generateTable,
+                                        Persistence persistence) {
+        if (records.size() >= batchSize || currentIndex == totalRowCount - 1) {
             persistence.persist(generateTable, records);
+            records.clear();
         }
+    }
 
-        executorService.shutdown();
+    private void finalBatchPersistence(int totalRowCount, List<GenerateRecord> records,
+                                       GenerateTable generateTable, Persistence persistence) {
+        if (!records.isEmpty()) {
+            persistence.persist(generateTable, records);
+            records.clear();
+        }
     }
 
     public Object generate(GenerateColumn generateColumn) {
-        return CachingGeneratorFactory.create(generateColumn).generate();
+        return GeneratorFactory.create(generateColumn).generate();
     }
 }
