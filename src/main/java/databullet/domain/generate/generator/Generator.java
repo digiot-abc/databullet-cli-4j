@@ -1,10 +1,18 @@
 package databullet.domain.generate.generator;
 
-public interface Generator<T> {
+import databullet.domain.definition.data.options.Options;
 
-    T generate();
+public abstract class Generator<T, U extends Options> {
 
-    default void initialize() {
+    protected final U options;
+
+    public Generator(U options) {
+        this.options = options;
+    }
+
+    public abstract T generate();
+
+    public void initialize() {
         // NOP
     }
 }

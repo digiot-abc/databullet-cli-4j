@@ -5,13 +5,14 @@ import databullet.domain.definition.data.options.DecimalOptions;
 import java.util.Random;
 
 @GenerateOptions(DecimalOptions.class)
-public class DecimalGenerator implements Generator<Double> {
+public class DecimalGenerator extends Generator<Double, DecimalOptions> {
 
   private final long scaleFactor;
   private final long range;
   private final Random random = new Random();
 
   public DecimalGenerator(DecimalOptions options) {
+    super(options);
     int digit = options.getDigit();
     int afterPointDigit = options.getAfterPointDigit();
 

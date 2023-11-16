@@ -3,8 +3,6 @@ package databullet.domain.definition.table;
 import databullet.domain.definition.data.DataSpecColumn;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class Column {
 

@@ -2,13 +2,12 @@ package databullet.domain.generate.generator;
 
 import databullet.domain.definition.data.options.ReferenceOptions;
 
+// TODO
 @GenerateOptions(ReferenceOptions.class)
-public class ReferenceGenerator implements Generator<String> {
-
-    private ReferenceOptions referenceOptions;
+public class ReferenceGenerator extends Generator<String, ReferenceOptions> {
 
     public ReferenceGenerator(ReferenceOptions referenceOptions) {
-        this.referenceOptions = referenceOptions;
+        super(referenceOptions);
     }
 
     @Override

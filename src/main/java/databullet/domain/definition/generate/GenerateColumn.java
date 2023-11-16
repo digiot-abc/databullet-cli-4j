@@ -1,11 +1,19 @@
-package databullet.domain.generate.table;
+package databullet.domain.definition.generate;
 
 import databullet.domain.definition.data.DataSpecColumn;
 import databullet.domain.definition.table.Column;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class GenerateColumn {
+
+  private GenerateColumn relationParent;
+
+  private List<GenerateColumn> relationChildren;
+
+  private GenerateTable ownerTable;
 
   private String name;
 

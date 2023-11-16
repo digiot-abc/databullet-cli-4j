@@ -6,4 +6,10 @@ import lombok.Data;
 @JsonTypeName("email")
 @Data
 public class EmailOptions implements Options {
+
+    private Integer length;
+
+    public EmailOptions() {
+        this.length = 20;
+    }
 }

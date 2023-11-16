@@ -5,13 +5,14 @@ import databullet.domain.definition.data.options.IntOptions;
 import java.util.concurrent.ThreadLocalRandom;
 
 @GenerateOptions(IntOptions.class)
-public class NumericGenerator implements Generator<Integer> {
+public class IntGenerator extends Generator<Integer, IntOptions> {
 
   private long min;
   private long max;
   private final ThreadLocalRandom random;
 
-  public NumericGenerator(IntOptions intOptions) {
+  public IntGenerator(IntOptions intOptions) {
+    super(intOptions);
     this.min = intOptions.getMin();
     this.max = intOptions.getMax();
     this.random = ThreadLocalRandom.current();

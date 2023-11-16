@@ -2,37 +2,6 @@
   "scale": 0.01,
   "tables": [
     {
-      "name": "users",
-      "rowCount": 1000000,
-      "columns": [
-        {
-          "name": "id",
-          "type": {
-            "name": "sequence",
-            "options": {
-              "start": 1,
-              "increment": 1
-            }
-          }
-        },
-        {
-          "name": "username",
-          "type": {
-            "name": "string",
-            "options": {
-              "length": 10
-            }
-          }
-        },
-        {
-          "name": "email",
-          "type": {
-            "name": "email"
-          }
-        }
-      ]
-    },
-    {
       "name": "orders",
       "rowCount": 500000,
       "columns": [
@@ -73,6 +42,37 @@
               "min": 100,
               "max": 10000
             }
+          }
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "rowCount": 1000000,
+      "columns": [
+        {
+          "name": "id",
+          "type": {
+            "name": "sequence",
+            "options": {
+              "start": 1,
+              "increment": 1
+            }
+          }
+        },
+        {
+          "name": "username",
+          "type": {
+            "name": "string",
+            "options": {
+              "length": 10
+            }
+          }
+        },
+        {
+          "name": "email",
+          "type": {
+            "name": "email"
           }
         }
       ]

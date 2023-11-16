@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ThreadLocalRandom;
 
 @GenerateOptions(DateTimeOptions.class)
-public class DateTimeGenerator implements Generator<String> {
+public class DateTimeGenerator extends Generator<String, DateTimeOptions> {
 
     private final long start;
     private final long end;
@@ -17,6 +17,7 @@ public class DateTimeGenerator implements Generator<String> {
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
     public DateTimeGenerator(DateTimeOptions dateOptions) {
+        super(dateOptions);
         this.formatter = dateOptions.getFormatter();
         this.start = dateOptions.getStart().toLocalDate().toEpochDay();
         this.end = dateOptions.getEnd().toLocalDate().toEpochDay();

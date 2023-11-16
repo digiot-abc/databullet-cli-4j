@@ -5,20 +5,18 @@ import databullet.domain.definition.data.options.StringOptions;
 import java.util.concurrent.ThreadLocalRandom;
 
 @GenerateOptions(StringOptions.class)
-public class StringGenerator implements Generator<String> {
+public class StringGenerator extends Generator<String, StringOptions> {
 
   private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  StringOptions stringOptions;
-
   public StringGenerator(StringOptions stringOptions) {
-    this.stringOptions = stringOptions;
+    super(stringOptions);
   }
 
   @Override
   public String generate() {
 
-    int length = stringOptions.getLength();
+    int length = options.getLength();
 
     if (length <= 0) {
       return "";

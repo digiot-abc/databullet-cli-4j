@@ -1,17 +1,11 @@
 package databullet.domain.generate;
 
-import databullet.domain.definition.data.DataSpecTable;
-import databullet.domain.definition.table.Column;
-import databullet.domain.definition.table.Table;
-import databullet.domain.definition.table.TableDefinition;
-import databullet.domain.generate.generator.GeneratorFactory;
-import databullet.domain.generate.table.GenerateColumn;
-import databullet.domain.generate.table.GenerateTable;
-import databullet.domain.write.DataRecord;
-import databullet.domain.write.DataWriter;
-import lombok.SneakyThrows;
+import databullet.domain.definition.GenerateDefinitions;
+import databullet.domain.generate.generator.CachingGeneratorFactory;
+import databullet.domain.definition.generate.GenerateColumn;
+import databullet.domain.definition.generate.GenerateTable;
+import databullet.domain.generate.persistance.Persistence;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -32,59 +26,50 @@ public class GenerateProcessor {
         this.store = store;
     }
 
-    @SneakyThrows
-    public void generate(TableDefinition tableDef, DataWriter<?> writer) {
-        List<Table> tables = tableDef.getTables();
-        for (Table table : tables) {
-            generate(table, store.getGenerateTable(table), writer);
+    public void generate(GenerateDefinitions definitions, Persistence persistence) throws ExecutionException, InterruptedException {
+        for (GenerateTable table : definitions.getGenTables()) {
+            generate(table, persistence);
         }
     }
 
-    public void generate(Table table, GenerateTable generateTable, DataWriter<?> writer) {
+    public void generate(GenerateTable generateTable, Persistence persistence) throws ExecutionException, InterruptedException {
 
         // 並列処理用
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        Future<String>[] futures = new Future[table.getColumnCount()];
+        Future<String>[] futures = new Future[generateTable.getColumnCount()];
 
-        // 生成行数の計算
-        long rowCount = (long) (generateTable.getDataSpecTable().getRowCount() * store.dataSpecDefinition.getScale());
-
-        List<DataRecord> records = new ArrayList<>();
+        long rowCount = generateTable.getRowCount();
+        List<GenerateRecord> records = new ArrayList<>();
         for (int i = 0; i < rowCount; i++) {
 
             int index = 0;
-            for (Column column : table.getColumns()) {
+            for (GenerateColumn column : generateTable.getColumns()) {
                 futures[index++] = executorService.submit(() -> generate(column).toString());
             }
 
-            DataRecord record = new DataRecord();
+            GenerateRecord record = new GenerateRecord();
             for (Future<String> future : futures) {
-                try {
-                    record.append(future.get());
-                } catch (InterruptedException | ExecutionException e) {;
-                    e.printStackTrace();
-                }
+                record.append(future.get());
             }
 
             records.add(record);
 
             if (records.size() >= batchSize) {
-                System.out.println(table.getName() + " table : " + i + "/" + rowCount);
-                writer.write(Paths.get("TODO"), records);
+                System.out.println(generateTable.getName() + " table : " + i + "/" + rowCount);
+                persistence.persist(generateTable, records);
                 records.clear();
             }
         }
 
         if (records.size() > 0) {
-            System.out.println(table.getName() + " table : " + rowCount + "/" + rowCount);
-            writer.write(Paths.get("TODO"), records);
+            System.out.println(generateTable.getName() + " table : " + rowCount + "/" + rowCount);
+            persistence.persist(generateTable, records);
         }
 
         executorService.shutdown();
     }
 
-    public Object generate(Column tableColumn) {
-        GenerateColumn generateColumn = store.getGenerateColumn(tableColumn);
-        return GeneratorFactory.create(generateColumn).generate();
+    public Object generate(GenerateColumn generateColumn) {
+        return CachingGeneratorFactory.create(generateColumn).generate();
     }
 }

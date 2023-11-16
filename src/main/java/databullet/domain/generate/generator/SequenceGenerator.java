@@ -3,30 +3,23 @@ package databullet.domain.generate.generator;
 import databullet.domain.definition.data.options.SequenceOptions;
 
 @GenerateOptions(SequenceOptions.class)
-public class SequenceGenerator implements Generator<Integer> {
+public class SequenceGenerator extends Generator<Integer, SequenceOptions> {
 
     Integer current = null;
 
-    private SequenceOptions sequenceOptions;
-
     public SequenceGenerator(SequenceOptions sequenceOptions) {
-        this.sequenceOptions = sequenceOptions;
+        super(sequenceOptions);
     }
 
     @Override
     public Integer generate() {
 
-        if (current == null) {
-            current = sequenceOptions.getStart();
+        if (current != null) {
+            current += options.getIncrement();
+        } else {
+            current = options.getStart();
         }
 
-        current += sequenceOptions.getIncrement();
-
         return current;
-    }
-
-    @Override
-    public void initialize() {
-
     }
 }

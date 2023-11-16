@@ -1,13 +1,16 @@
-package databullet.domain.write;
+package databullet.domain.generate;
+
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataRecord {
+public class GenerateRecord {
 
+  @Getter
   private List<Object> data;
 
-  public DataRecord() {
+  public GenerateRecord() {
     data = new ArrayList<>();
   }
 
