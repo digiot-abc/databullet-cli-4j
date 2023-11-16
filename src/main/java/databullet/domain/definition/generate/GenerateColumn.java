@@ -5,6 +5,7 @@ import databullet.domain.definition.table.Column;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class GenerateColumn {
@@ -25,5 +26,12 @@ public class GenerateColumn {
     this.name = tableColumn.getName();
     this.tableColumn = tableColumn;
     this.dataSpecColumn = dataSpecColumn;
+  }
+
+  @Override
+  public int hashCode() {
+    // relationParentとrelationChildrenを含まないハッシュコードの計算
+    // ownerTableも循環参照を避けるために除外しています
+    return Objects.hash(name, tableColumn.getName(), dataSpecColumn.getName());
   }
 }

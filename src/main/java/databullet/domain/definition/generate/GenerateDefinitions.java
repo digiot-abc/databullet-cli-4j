@@ -1,5 +1,6 @@
-package databullet.domain.definition;
+package databullet.domain.definition.generate;
 
+import databullet.domain.definition.Definitions;
 import databullet.domain.definition.generate.GenerateTable;
 import databullet.domain.definition.generate.GenerateTableFactory;
 import databullet.domain.definition.data.DataSpecDefinition;
@@ -14,7 +15,7 @@ public class GenerateDefinitions extends Definitions {
 
     private Double scale;
 
-    private List<GenerateTable> genTables;
+    private List<GenerateRelationGroup> relationGroups;
 
     public GenerateDefinitions(Definitions definitions) {
         this(definitions.getTableDef(), definitions.getRelationInfo(), definitions.getDataSpec());
@@ -23,6 +24,6 @@ public class GenerateDefinitions extends Definitions {
     public GenerateDefinitions(TableDefinition tableDef, RelationInfo relationInfo, DataSpecDefinition dataSpec) {
         super(tableDef, relationInfo, dataSpec);
         this.scale = dataSpec.getScale();
-        this.genTables = GenerateTableFactory.create(this);
+        this.relationGroups = GenerateTableFactory.create(this);
     }
 }

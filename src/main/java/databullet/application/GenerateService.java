@@ -1,6 +1,6 @@
 package databullet.application;
 
-import databullet.domain.definition.GenerateDefinitions;
+import databullet.domain.definition.generate.GenerateDefinitions;
 import databullet.domain.generate.GenerateProcessor;
 import databullet.domain.generate.GenerateStore;
 import databullet.domain.generate.persistance.Persistence;

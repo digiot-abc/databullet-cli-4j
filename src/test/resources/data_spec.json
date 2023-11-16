@@ -76,6 +76,10 @@
           }
         }
       ]
+    },
+    {
+      "name": "order_items",
+      "rowCount": 200000
     }
   ]
 }

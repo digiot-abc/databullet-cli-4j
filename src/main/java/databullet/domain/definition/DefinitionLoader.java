@@ -1,6 +1,7 @@
 package databullet.domain.definition;
 
 import databullet.domain.definition.data.DataSpecDefinition;
+import databullet.domain.definition.generate.GenerateDefinitions;
 import databullet.domain.definition.table.RelationInfo;
 import databullet.domain.definition.table.TableDefinition;
 import databullet.infrastructure.JsonMapper;

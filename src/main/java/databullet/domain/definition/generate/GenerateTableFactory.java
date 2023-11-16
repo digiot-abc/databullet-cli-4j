@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class GenerateTableFactory {
 
-    public static List<GenerateTable> create(Definitions definitions) {
+    public static List<GenerateRelationGroup> create(Definitions definitions) {
 
         DataSpecDefinition dataSpec = definitions.getDataSpec();
 
@@ -32,7 +32,7 @@ public class GenerateTableFactory {
                     dataSpecTable.getColumns().stream().collect(Collectors.toMap(c -> c.getName(), c -> c));
 
             for (Column column : table.getColumns()) {
-                DataSpecColumn dataDataSpecColumn = dataColumnMap.getOrDefault(column.getName(), null);
+                DataSpecColumn dataDataSpecColumn = dataColumnMap.getOrDefault(column.getName(), DataSpecColumn.empty());
                 GenerateColumn generateColumn = new GenerateColumn(column, dataDataSpecColumn);
                 generateColumn.setOwnerTable(generateTable);
                 generateTable.getColumns().add(generateColumn);
@@ -83,7 +83,31 @@ public class GenerateTableFactory {
             children.add(childColumn);
         }
 
-        return sortedGenerateTables;
+        // リレーショングループのリストを作成
+        List<GenerateRelationGroup> relationGroups = new ArrayList<>();
+        Map<GenerateTable, GenerateRelationGroup> tableToGroupMap = new HashMap<>();
+
+        for (GenerateTable table : sortedGenerateTables) {
+            GenerateRelationGroup group = new GenerateRelationGroup();
+            if (dependencies.containsKey(table)) {
+                // 依存するテーブルがある場合、同じグループに追加
+                for (GenerateTable parentTable : dependencies.get(table)) {
+                    if (tableToGroupMap.containsKey(parentTable)) {
+                        group = tableToGroupMap.get(parentTable);
+                        break;
+                    }
+                }
+            }
+            group.getGenTables().add(table);
+            tableToGroupMap.put(table, group);
+
+            // 新しいグループが作成された場合、リストに追加
+            if (!relationGroups.contains(group)) {
+                relationGroups.add(group);
+            }
+        }
+
+        return relationGroups;
     }
 
     private static List<GenerateTable> topologicalSort(List<GenerateTable> tables,
@@ -96,7 +120,7 @@ public class GenerateTableFactory {
             visit(table, visited, expanded, sortedList, dependencies);
         }
 
-        Collections.reverse(sortedList); // 依存関係が前に来るようにリストを逆にする
+        Collections.reverse(sortedList);
         return sortedList;
     }
 

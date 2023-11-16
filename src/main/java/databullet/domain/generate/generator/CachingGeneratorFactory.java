@@ -46,7 +46,7 @@ public final class CachingGeneratorFactory {
       DataSpecColumn dataSpecColumn = column.getDataSpecColumn();
 
       // データ生成仕様からデータ生成
-      if (dataSpecColumn.getType() != null) {
+      if (column.getDataSpecColumn() != null && dataSpecColumn.getType() != null) {
         Class<? extends Options> optionsClassInput = dataSpecColumn.getType().getOptions().getClass();
         generatorMap.put(column, generatorFactoryMap.get(optionsClassInput).apply(column.getDataSpecColumn()));
         return generatorMap.get(column);
@@ -61,7 +61,7 @@ public final class CachingGeneratorFactory {
           case "char":
           case "text":
             // 文字列ジェネレータを返す
-            StringOptions stringOptions = new StringOptions(column.getTableColumn().getDigit().getDigit());//getOptions(column, StringOptions.class, new StringOptions(column.getTableColumn().getDigit().getDigit()));
+            StringOptions stringOptions = new StringOptions(column.getTableColumn().getDigit().getDigit());
             generatorMap.put(column, new StringGenerator(stringOptions));
             break;
 

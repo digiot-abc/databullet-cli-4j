@@ -50,6 +50,56 @@
           "nullable": false
         }
       ]
+    },
+    {
+      "name": "products",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "primaryKey": true
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "digit": 255,
+          "nullable": false
+        },
+        {
+          "name": "price",
+          "type": "decimal",
+          "digit": [
+            19,
+            2
+          ],
+          "nullable": false
+        }
+      ]
+    },
+    {
+      "name": "order_items",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "primaryKey": true
+        },
+        {
+          "name": "order_id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "int",
+          "nullable": false
+        }
+      ]
     }
   ]
 }

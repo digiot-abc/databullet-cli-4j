@@ -9,10 +9,6 @@ public class DataSpecColumn {
     private String name;
     private DataSpecType type;
 
-    public boolean is(Column column) {
-        return this.name.equals(column.getName());
-    }
-
     public static DataSpecColumn empty() {
         DataSpecColumn dataSpecColumn = new DataSpecColumn();
         dataSpecColumn.setName("");

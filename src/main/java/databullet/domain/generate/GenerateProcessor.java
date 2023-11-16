@@ -1,6 +1,7 @@
 package databullet.domain.generate;
 
-import databullet.domain.definition.GenerateDefinitions;
+import databullet.domain.definition.generate.GenerateDefinitions;
+import databullet.domain.definition.generate.GenerateRelationGroup;
 import databullet.domain.generate.generator.CachingGeneratorFactory;
 import databullet.domain.definition.generate.GenerateColumn;
 import databullet.domain.definition.generate.GenerateTable;
@@ -22,13 +23,16 @@ public class GenerateProcessor {
     static long batchSize = maxMemory / 100;
 
     public GenerateProcessor(GenerateStore store) {
-        // TODO スレッド数などの定義
         this.store = store;
     }
 
     public void generate(GenerateDefinitions definitions, Persistence persistence) throws ExecutionException, InterruptedException {
-        for (GenerateTable table : definitions.getGenTables()) {
-            generate(table, persistence);
+
+        for (GenerateRelationGroup relationGroup : definitions.getRelationGroups()) {
+
+            for (GenerateTable table : relationGroup.getGenTables()) {
+                generate(table, persistence);
+            }
         }
     }
 
