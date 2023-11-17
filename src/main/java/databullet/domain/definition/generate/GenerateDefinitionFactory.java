@@ -1,10 +1,10 @@
 package databullet.domain.definition.generate;
 
 import databullet.domain.definition.Definitions;
-import databullet.domain.definition.data.DataSpecColumn;
-import databullet.domain.definition.data.DataSpecDefinition;
-import databullet.domain.definition.data.DataSpecTable;
-import databullet.domain.definition.data.options.ReferenceOptions;
+import databullet.domain.definition.dataspec.DataSpecColumn;
+import databullet.domain.definition.dataspec.DataSpecDefinition;
+import databullet.domain.definition.dataspec.DataSpecTable;
+import databullet.domain.definition.dataspec.options.ReferenceOptions;
 import databullet.domain.definition.table.*;
 
 import java.util.*;

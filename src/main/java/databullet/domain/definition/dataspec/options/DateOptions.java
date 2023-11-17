@@ -1,4 +1,4 @@
-package databullet.domain.definition.data.options;
+package databullet.domain.definition.dataspec.options;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -12,21 +12,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@JsonTypeName("datetime")
+@JsonTypeName("date")
 @Data
 @AllArgsConstructor
-@JsonDeserialize(using = DateTimeOptions.DateTimeDeserializer.class)
-public class DateTimeOptions implements Options {
+@JsonDeserialize(using = DateOptions.DateDeserializer.class)
+public class DateOptions implements Options {
 
-    private LocalDateTime start;
+    private LocalDate start;
 
-    private LocalDateTime end;
+    private LocalDate end;
 
-    public DateTimeOptions() {
-        end = LocalDateTime.now();
+    public DateOptions() {
+        end = LocalDate.now();
         start = end.minusYears(3);
         formatter = DateTimeFormatter.ISO_DATE;
     }
@@ -39,25 +39,25 @@ public class DateTimeOptions implements Options {
     }
 
     public void setStart(String start) {
-        this.start = LocalDateTime.parse(start, formatter);
+        this.start = LocalDate.parse(start, formatter);
     }
 
     public void setEnd(String end) {
-        this.end = LocalDateTime.parse(end, formatter);
+        this.end = LocalDate.parse(end, formatter);
     }
 
-    public static class DateTimeDeserializer extends JsonDeserializer<DateTimeOptions> {
+    public static class DateDeserializer extends JsonDeserializer<DateOptions> {
 
         @Override
-        public DateTimeOptions deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+        public DateOptions deserialize(JsonParser parser, DeserializationContext context) throws IOException {
 
             JsonNode node = parser.readValueAsTree();
-            DateTimeOptions options = new DateTimeOptions();
+            DateOptions options = new DateOptions();
 
             if (node instanceof ObjectNode) {
                 ObjectNode objectNode = (ObjectNode) node;
                 if (objectNode.has("format")) {
-                    options.setEnd(objectNode.get("format").asText());
+                    options.setFormat(objectNode.get("format").asText());
                 }
                 if (objectNode.has("start")) {
                     options.setStart(objectNode.get("start").asText());

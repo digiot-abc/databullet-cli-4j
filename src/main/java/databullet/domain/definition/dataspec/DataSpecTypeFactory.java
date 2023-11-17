@@ -1,7 +1,7 @@
-package databullet.domain.definition.data;
+package databullet.domain.definition.dataspec;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import databullet.domain.definition.data.options.Options;
+import databullet.domain.definition.dataspec.options.Options;
 import databullet.infrastructure.JsonMapper;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;

@@ -1,4 +1,4 @@
-package databullet.domain.definition.data.options;
+package databullet.domain.definition.dataspec.options;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Data;

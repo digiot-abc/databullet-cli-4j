@@ -1,7 +1,7 @@
 package databullet.domain.definition.table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import databullet.domain.definition.data.DataSpecTable;
+import databullet.domain.definition.dataspec.DataSpecTable;
 import lombok.Data;
 
 import java.util.List;

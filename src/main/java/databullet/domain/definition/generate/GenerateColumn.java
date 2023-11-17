@@ -1,6 +1,6 @@
 package databullet.domain.definition.generate;
 
-import databullet.domain.definition.data.DataSpecColumn;
+import databullet.domain.definition.dataspec.DataSpecColumn;
 import databullet.domain.definition.table.Column;
 import lombok.Data;
 

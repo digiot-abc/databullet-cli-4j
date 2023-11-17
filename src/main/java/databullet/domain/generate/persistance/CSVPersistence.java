@@ -16,8 +16,10 @@ public class CSVPersistence implements Persistence {
 
     private Path outputBasePath;
 
+    @SneakyThrows
     public CSVPersistence(Path outputBasePath) {
         this.outputBasePath = outputBasePath;
+        Files.createDirectories(outputBasePath);
     }
 
     @SneakyThrows
@@ -25,7 +27,8 @@ public class CSVPersistence implements Persistence {
     public void persist(GenerateTable table, List<GenerateRecord> records) {
         Path filePath = outputBasePath.resolve(table.getName() + ".csv");
 
-        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath,
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             for (GenerateRecord record : records) {
                 String csvRecord = record.getData().values().stream()
                         .map(field -> "\"" + field + "\"")

@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.PaddedNumberOptions;
+import databullet.domain.definition.dataspec.options.PaddedNumberOptions;
 
 import java.util.Random;
 

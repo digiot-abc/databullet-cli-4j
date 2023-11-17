@@ -2,13 +2,17 @@ package databullet.domain.generate;
 
 import databullet.domain.definition.generate.GenerateDefinition;
 import databullet.domain.definition.generate.GenerateRelationGroup;
+import databullet.domain.generate.generator.Generator;
 import databullet.domain.generate.generator.GeneratorFactory;
 import databullet.domain.definition.generate.GenerateColumn;
 import databullet.domain.definition.generate.GenerateTable;
+import databullet.domain.generate.generator.GeneratorRepository;
 import databullet.domain.generate.persistance.Persistence;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 public class GenerateProcessor {
@@ -126,6 +130,10 @@ public class GenerateProcessor {
     }
 
     public Object generate(GenerateColumn generateColumn) {
-        return GeneratorFactory.create(generateColumn).generate();
+        return GeneratorRepository.findByColumn(generateColumn).or(() -> {
+            Generator<?, ?> generator = GeneratorFactory.create(generateColumn);
+            GeneratorRepository.save(generateColumn, generator);
+            return Optional.of(generator);
+        }).get();
     }
 }

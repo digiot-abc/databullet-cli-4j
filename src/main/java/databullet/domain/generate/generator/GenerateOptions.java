@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.Options;
+import databullet.domain.definition.dataspec.options.Options;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.DecimalOptions;
+import databullet.domain.definition.dataspec.options.DecimalOptions;
 
 import java.util.Random;
 

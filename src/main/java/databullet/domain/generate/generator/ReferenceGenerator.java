@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.ReferenceOptions;
+import databullet.domain.definition.dataspec.options.ReferenceOptions;
 
 // TODO
 @GenerateOptions(ReferenceOptions.class)

@@ -1,6 +1,6 @@
 package databullet.domain.definition;
 
-import databullet.domain.definition.data.DataSpecDefinition;
+import databullet.domain.definition.dataspec.DataSpecDefinition;
 import databullet.domain.definition.table.TableDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

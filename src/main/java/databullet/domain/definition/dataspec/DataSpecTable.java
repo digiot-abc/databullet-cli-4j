@@ -1,4 +1,4 @@
-package databullet.domain.definition.data;
+package databullet.domain.definition.dataspec;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

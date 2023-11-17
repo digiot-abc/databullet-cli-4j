@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.Options;
+import databullet.domain.definition.dataspec.options.Options;
 
 public abstract class Generator<T, U extends Options> {
 

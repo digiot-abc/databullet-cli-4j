@@ -1,16 +1,16 @@
-package databullet.domain.definition.data.options;
+package databullet.domain.definition.dataspec.options;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@JsonTypeName("pad_number")
+@JsonTypeName("int")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaddedNumberOptions implements Options {
+public class IntOptions implements Options {
 
-    private int totalLength;
-    private int digits;
+  private Long min;
+  private Long max;
 }

@@ -1,6 +1,6 @@
 package databullet.domain.definition.table;
 
-import databullet.domain.definition.data.DataSpecColumn;
+import databullet.domain.definition.dataspec.DataSpecColumn;
 import lombok.Data;
 
 @Data

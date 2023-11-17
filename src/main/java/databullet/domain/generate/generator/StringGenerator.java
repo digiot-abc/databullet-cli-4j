@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.StringOptions;
+import databullet.domain.definition.dataspec.options.StringOptions;
 
 import java.util.concurrent.ThreadLocalRandom;
 

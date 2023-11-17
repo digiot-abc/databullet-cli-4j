@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.EmailOptions;
+import databullet.domain.definition.dataspec.options.EmailOptions;
 
 import java.util.concurrent.ThreadLocalRandom;
 

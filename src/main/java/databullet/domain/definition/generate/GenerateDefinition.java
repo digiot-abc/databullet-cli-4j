@@ -1,7 +1,7 @@
 package databullet.domain.definition.generate;
 
 import databullet.domain.definition.Definitions;
-import databullet.domain.definition.data.DataSpecDefinition;
+import databullet.domain.definition.dataspec.DataSpecDefinition;
 import databullet.domain.definition.table.TableDefinition;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.SequenceOptions;
+import databullet.domain.definition.dataspec.options.SequenceOptions;
 
 @GenerateOptions(SequenceOptions.class)
 public class SequenceGenerator extends Generator<Integer, SequenceOptions> {

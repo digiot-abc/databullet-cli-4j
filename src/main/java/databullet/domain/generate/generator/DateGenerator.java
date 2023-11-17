@@ -1,6 +1,6 @@
 package databullet.domain.generate.generator;
 
-import databullet.domain.definition.data.options.DateOptions;
+import databullet.domain.definition.dataspec.options.DateOptions;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

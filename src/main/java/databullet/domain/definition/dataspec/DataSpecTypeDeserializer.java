@@ -1,4 +1,4 @@
-package databullet.domain.definition.data;
+package databullet.domain.definition.dataspec;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
