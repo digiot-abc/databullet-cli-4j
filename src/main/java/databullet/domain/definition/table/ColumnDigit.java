@@ -9,7 +9,7 @@ public class ColumnDigit {
   private Integer digit;
   private Integer afterDecimalPointDigit;
 
-  ColumnDigit(Object size) {
+  public ColumnDigit(Object size) {
     if (size instanceof Integer) {
       this.digit = (Integer) size;
     } else if (size instanceof List) {

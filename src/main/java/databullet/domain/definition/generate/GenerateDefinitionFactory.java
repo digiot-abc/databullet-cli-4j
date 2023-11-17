@@ -33,7 +33,11 @@ public class GenerateDefinitionFactory {
 
             DataSpecTable dataSpecTable = dataSpecTableNameMap.getOrDefault(table.getName(), DataSpecTable.empty(table.getName()));
             GenerateTable generateTable = new GenerateTable(table, dataSpecTable);
-            generateTable.setRowCount((int) (dataSpecTable.getRowCount() * dataSpec.getScale()));
+
+            if (dataSpecTable.getRowCount() == null) {
+                dataSpecTable.setRowCount(dataSpec.getDefaultRowCount());
+            }
+            generateTable.setRowCount((int) (dataSpec.getDefaultRowCount() * dataSpec.getScale()));
             generateTable.setColumns(new ArrayList<>());
 
             Map<String, DataSpecColumn> dataColumnMap =
@@ -63,6 +67,7 @@ public class GenerateDefinitionFactory {
 
             ReferenceOptions options = (ReferenceOptions) relationColumn.getDataSpecColumn().getType().getOptions();
             GenerateTable childTable = relationColumn.getOwnerTable();
+
             GenerateTable parentTable = generateTableMap.get(options.getReferencedTable());
             childTable.setParentTable(parentTable);
             parentTable.getChildTables().add(childTable);
@@ -75,10 +80,11 @@ public class GenerateDefinitionFactory {
             children.add(relationColumn);
 
             // 子と親の情報を連携
-            long rowCount = parentColumn.getOwnerTable().getDataSpecTable().getRowCount();
+            int rowCount = parentColumn.getOwnerTable().getDataSpecTable().getRowCount();
             relationColumn.getOwnerTable().getDataSpecTable().setRowCount(rowCount);
 
             dependencies.computeIfAbsent(parentTable, k -> new HashSet<>()).add(relationColumn.getOwnerTable());
+
         }
 
         // トポロジカルソートを実施して順序付け

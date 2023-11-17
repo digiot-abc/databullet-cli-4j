@@ -134,6 +134,6 @@ public class GenerateProcessor {
             Generator<?, ?> generator = GeneratorFactory.create(generateColumn);
             GeneratorRepository.save(generateColumn, generator);
             return Optional.of(generator);
-        }).get();
+        }).get().generate();
     }
 }

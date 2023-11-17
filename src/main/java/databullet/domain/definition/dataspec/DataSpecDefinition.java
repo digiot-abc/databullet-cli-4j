@@ -8,5 +8,6 @@ import java.util.List;
 public class DataSpecDefinition {
 
     private Double scale;
+    private Integer defaultRowCount = 1;
     private List<DataSpecTable> tables;
 }

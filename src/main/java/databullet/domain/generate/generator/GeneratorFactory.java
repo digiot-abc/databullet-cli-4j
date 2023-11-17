@@ -48,9 +48,10 @@ public final class GeneratorFactory {
     }
     // テーブル仕様からデータ生成
     else {
-      String type = column.getTableColumn().getType();
+      String type = column.getTableColumn().getType().toLowerCase();
       switch (type) {
         // 文字列型
+        case "character varying":
         case "string":
         case "varchar":
         case "char":

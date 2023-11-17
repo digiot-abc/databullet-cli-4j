@@ -1,6 +1,8 @@
 package databullet.infrastructure;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.SneakyThrows;
 
 import java.nio.charset.Charset;
@@ -13,6 +15,13 @@ public class JsonMapper {
 
     public JsonMapper() {
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
+
+    @SneakyThrows
+    public String mapObjectToJson(Object obj) {
+        return objectMapper.writeValueAsString(obj);
     }
 
     @SneakyThrows
