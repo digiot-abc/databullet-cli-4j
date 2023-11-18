@@ -35,6 +35,7 @@ public class CSVPersistence implements Persistence {
     @SneakyThrows
     @Override
     public void persist(GenerateTable table, List<GenerateRecord> records) {
+
         Path filePath = outputBasePath.resolve(table.getName() + ".csv");
 
         try (BufferedWriter writer = Files.newBufferedWriter(filePath,

@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.SequenceType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 @GenerateOptions(SequenceType.class)
 public class SequenceGenerator extends Generator<Integer, SequenceType> {
@@ -12,7 +14,7 @@ public class SequenceGenerator extends Generator<Integer, SequenceType> {
     }
 
     @Override
-    public Integer generate() {
+    public Integer generate(GenerateStore store) {
 
         if (current != null) {
             current += type.getIncrement();

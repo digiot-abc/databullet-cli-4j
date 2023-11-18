@@ -39,4 +39,8 @@ public class GenerateColumn {
   public boolean hasParent() {
     return relationParent != null;
   }
+
+  public String getFullName() {
+    return ownerTable.getName().concat(".").concat(name);
+  }
 }

@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.DateTimeType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,7 +26,7 @@ public class DateTimeGenerator extends Generator<String, DateTimeType> {
     }
 
     @Override
-    public String generate() {
+    public String generate(GenerateStore store) {
         long randomDay = random.nextLong(start, end);
         LocalDate randomDate = LocalDate.ofEpochDay(randomDay);
         int secondOfDay = random.nextInt(86400); // 一日の秒数

@@ -1,8 +1,10 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.ReferenceType;
+import databullet.domain.definition.generate.GenerateColumn;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
-// TODO
 @GenerateOptions(ReferenceType.class)
 public class ReferenceGenerator extends Generator<String, ReferenceType> {
 
@@ -11,7 +13,10 @@ public class ReferenceGenerator extends Generator<String, ReferenceType> {
     }
 
     @Override
-    public String generate() {
-        return "ref";
+    public String generate(GenerateStore store) {
+        GenerateColumn column = store.getProcessingColumns().get();
+        int index = store.getProcessingRowIndex().get();
+        Object value = store.getColumnValue(column, index);
+        return value.toString();
     }
 }

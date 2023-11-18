@@ -29,7 +29,7 @@ public class GenerateService {
 
         // 生成を行う
         try {
-            GenerateStore store = new GenerateStore();
+            GenerateStore store = new GenerateStore(500);
             GenerateProcessor processor = new GenerateProcessor(store);
             processor.generate(definitions, persistence);
         } catch (Exception e) {

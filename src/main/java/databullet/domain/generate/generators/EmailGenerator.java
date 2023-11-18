@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.EmailType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,7 +20,7 @@ public class EmailGenerator extends Generator<String, EmailType> {
         this.totalLength = emailType.getLength();
     }
 
-    public String generate() {
+    public String generate(GenerateStore store) {
 
         String domain = DOMAINS[ThreadLocalRandom.current().nextInt(DOMAINS.length)];
 

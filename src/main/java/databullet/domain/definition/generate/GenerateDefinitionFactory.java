@@ -27,6 +27,7 @@ public class GenerateDefinitionFactory {
     Map<String, GenerateColumn> generateColumnMap = new LinkedHashMap<>();
 
     for (Table table : definitions.getTableDef().getTables()) {
+
       String tableName = table.getName();
       DataSpecTable dataSpecTable = dataSpecTableNameMap.getOrDefault(tableName, DataSpecTable.empty(tableName));
 
@@ -34,7 +35,7 @@ public class GenerateDefinitionFactory {
       if (dataSpecTable.getRowCount() == null) {
         dataSpecTable.setRowCount(dataSpec.getDefaultRowCount());
       }
-      int rowCount = (int) (dataSpec.getDefaultRowCount() * dataSpec.getScale());
+      int rowCount = (int) (dataSpecTable.getRowCount() * dataSpecTable.getScale() * dataSpec.getScale());
       generateTable.setRowCount(rowCount);
       generateTable.setColumns(new ArrayList<>(table.getColumns().size()));
 
@@ -60,17 +61,21 @@ public class GenerateDefinitionFactory {
     }
 
     relationColumns.forEach(relationColumn -> {
+
       ReferenceType options = (ReferenceType) relationColumn.getDataSpecColumn().getType();
       GenerateTable childTable = relationColumn.getOwnerTable();
       GenerateTable parentTable = generateTableMap.get(options.getReferencedTable());
       childTable.setParentTable(parentTable);
+
       parentTable.getChildTables().add(childTable);
       GenerateColumn parentColumn = generateColumnMap.get(options.getFQDNReferencedColumnName());
       relationColumn.setRelationParent(parentColumn);
-      List<GenerateColumn> children = parentColumn.getRelationChildren();
-      children.add(relationColumn);
-      int rowCount = parentColumn.getOwnerTable().getDataSpecTable().getRowCount();
-      relationColumn.getOwnerTable().getDataSpecTable().setRowCount(rowCount);
+
+      parentColumn.getRelationChildren().add(relationColumn);
+
+//      DataSpecTable ownerTable = relationColumn.getOwnerTable().getDataSpecTable();
+//      int rowCount = ownerTable.getRowCount();
+//      ownerTable.setRowCount(rowCount);
     });
 
     GenerateRelationGroup singleGroup = new GenerateRelationGroup();
@@ -89,15 +94,5 @@ public class GenerateDefinitionFactory {
 
     List<GenerateRelationGroup> relationGroups = List.of(singleGroup, familyGroup);
     return relationGroups;
-  }
-
-  public static Set<GenerateTable> tree(GenerateTable table) {
-    Set<GenerateTable> set = new TreeSet<>();
-    set.add(table);
-    for (GenerateTable childTable : table.getChildTables()) {
-      set.add(childTable.getParentTable());
-      set.addAll(tree(childTable));
-    }
-    return set;
   }
 }

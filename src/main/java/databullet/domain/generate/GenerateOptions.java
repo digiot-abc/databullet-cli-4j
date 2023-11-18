@@ -1,4 +1,4 @@
-package databullet.domain.generate.generators;
+package databullet.domain.generate;
 
 import databullet.domain.definition.dataspec.DataSpecType;
 

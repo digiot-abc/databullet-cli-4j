@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.IntType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,7 +21,7 @@ public class IntGenerator extends Generator<Integer, IntType> {
   }
 
   @Override
-  public Integer generate() {
+  public Integer generate(GenerateStore store) {
     // (max - min + 1)を加算して、minとmaxの両方を含む範囲を確保
     return (int)(random.nextLong(max - min + 1) + min);
   }

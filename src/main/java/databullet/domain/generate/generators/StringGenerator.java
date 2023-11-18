@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.StringType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,7 +16,7 @@ public class StringGenerator extends Generator<String, StringType> {
   }
 
   @Override
-  public String generate() {
+  public String generate(GenerateStore store) {
 
     int length = type.getLength();
 

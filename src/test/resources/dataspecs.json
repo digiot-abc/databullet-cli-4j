@@ -1,10 +1,10 @@
 {
-  "scale": 0.0001,
-  "defaultRowCount": 10000,
+  "scale": 1.0,
+  "defaultRowCount": 100,
   "tables": [
     {
       "name": "orders",
-      "rowCount": 500000,
+      "rowCount": 10,
       "columns": [
         {
           "name": "id",
@@ -41,7 +41,7 @@
     },
     {
       "name": "users",
-      "rowCount": 1000000,
+      "rowCount": 5,
       "columns": [
         {
           "name": "id",
@@ -68,7 +68,7 @@
     },
     {
       "name": "order_items",
-      "rowCount": 200000
+      "rowCount": 200
     }
   ]
 }

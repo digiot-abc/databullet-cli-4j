@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.DateType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,7 +24,7 @@ public class DateGenerator extends Generator<String, DateType> {
     }
 
     @Override
-    public String generate() {
+    public String generate(GenerateStore store) {
         long randomDay = ThreadLocalRandom.current().nextLong(start, end);
         LocalDate randomDate = LocalDate.ofEpochDay(randomDay);
         return randomDate.format(formatter);

@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.DecimalType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 import java.util.Random;
 
@@ -21,7 +23,7 @@ public class DecimalGenerator extends Generator<Double, DecimalType> {
   }
 
   @Override
-  public Double generate() {
+  public Double generate(GenerateStore store) {
     long randomLong = (long) (random.nextDouble() * range);
     return (double) (randomLong + scaleFactor) / scaleFactor;
   }

@@ -1,6 +1,8 @@
 package databullet.domain.generate.generators;
 
 import databullet.domain.definition.dataspec.types.PaddedNumberType;
+import databullet.domain.generate.GenerateOptions;
+import databullet.domain.generate.GenerateStore;
 
 import java.util.Random;
 
@@ -18,7 +20,7 @@ public class PaddedNumberGenerator extends Generator<String, PaddedNumberType> {
     }
 
     @Override
-    public String generate() {
+    public String generate(GenerateStore store) {
         long number = Math.abs(random.nextLong()) % (maxValue + 1);
         return String.format("%0" + totalLength + "d", number);
     }

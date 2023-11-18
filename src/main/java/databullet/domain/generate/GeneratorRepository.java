@@ -1,6 +1,7 @@
-package databullet.domain.generate.generators;
+package databullet.domain.generate;
 
 import databullet.domain.definition.generate.GenerateColumn;
+import databullet.domain.generate.generators.Generator;
 
 import java.util.HashMap;
 import java.util.Optional;
