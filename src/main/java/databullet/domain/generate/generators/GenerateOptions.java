@@ -1,6 +1,6 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
-import databullet.domain.definition.dataspec.options.Options;
+import databullet.domain.definition.dataspec.DataSpecType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface GenerateOptions {
 
-  Class<? extends Options> value();
+  Class<? extends DataSpecType> value();
 }

@@ -1,4 +1,4 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
 import databullet.domain.definition.generate.GenerateColumn;
 

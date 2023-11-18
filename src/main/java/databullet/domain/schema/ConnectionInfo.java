@@ -15,4 +15,11 @@ public class ConnectionInfo {
     private String user;
 
     private String password;
+
+    public String getUrl() {
+        if (url.startsWith("jdbc:h2") && !database.equals(Database.H2)) {
+            return url.concat(";MODE=").concat(database.name());
+        }
+        return url;
+    }
 }

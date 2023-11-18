@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class CSVPersistence implements Persistence {
@@ -20,6 +21,15 @@ public class CSVPersistence implements Persistence {
     public CSVPersistence(Path outputBasePath) {
         this.outputBasePath = outputBasePath;
         Files.createDirectories(outputBasePath);
+        Files.list(outputBasePath)
+            .filter(f -> f.toString().toLowerCase(Locale.ROOT).endsWith(".csv"))
+            .forEach(path -> {
+                try {
+                    Files.delete(path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
     }
 
     @SneakyThrows

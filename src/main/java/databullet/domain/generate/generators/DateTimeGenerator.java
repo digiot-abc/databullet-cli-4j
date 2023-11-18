@@ -1,6 +1,6 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
-import databullet.domain.definition.dataspec.options.DateTimeOptions;
+import databullet.domain.definition.dataspec.types.DateTimeType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,15 +8,15 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ThreadLocalRandom;
 
-@GenerateOptions(DateTimeOptions.class)
-public class DateTimeGenerator extends Generator<String, DateTimeOptions> {
+@GenerateOptions(DateTimeType.class)
+public class DateTimeGenerator extends Generator<String, DateTimeType> {
 
     private final long start;
     private final long end;
     private final DateTimeFormatter formatter;
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
-    public DateTimeGenerator(DateTimeOptions dateOptions) {
+    public DateTimeGenerator(DateTimeType dateOptions) {
         super(dateOptions);
         this.formatter = dateOptions.getFormatter();
         this.start = dateOptions.getStart().toLocalDate().toEpochDay();

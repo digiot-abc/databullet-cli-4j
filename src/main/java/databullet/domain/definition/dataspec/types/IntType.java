@@ -1,15 +1,14 @@
-package databullet.domain.definition.dataspec.options;
+package databullet.domain.definition.dataspec.types;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import databullet.domain.definition.dataspec.DataSpecType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@JsonTypeName("int")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IntOptions implements Options {
+public class IntType extends DataSpecType {
 
   private Long min;
   private Long max;

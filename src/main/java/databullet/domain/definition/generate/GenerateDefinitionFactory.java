@@ -4,130 +4,100 @@ import databullet.domain.definition.Definitions;
 import databullet.domain.definition.dataspec.DataSpecColumn;
 import databullet.domain.definition.dataspec.DataSpecDefinition;
 import databullet.domain.definition.dataspec.DataSpecTable;
-import databullet.domain.definition.dataspec.options.ReferenceOptions;
-import databullet.domain.definition.table.*;
+import databullet.domain.definition.dataspec.types.ReferenceType;
+import databullet.domain.definition.table.Column;
+import databullet.domain.definition.table.Table;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GenerateDefinitionFactory {
 
-    public static List<GenerateRelationGroup> create(Definitions definitions) {
+  public static List<GenerateRelationGroup> create(Definitions definitions) {
 
-        DataSpecDefinition dataSpec = definitions.getDataSpec();
+    DataSpecDefinition dataSpec = definitions.getDataSpec();
 
-        Map<String, DataSpecTable> dataSpecTableNameMap =
-                dataSpec.getTables().stream().collect(Collectors.toMap(t -> t.getName(), t -> t));
+    Map<String, DataSpecTable> dataSpecTableNameMap = dataSpec.getTables()
+        .stream()
+        .collect(Collectors.toMap(DataSpecTable::getName, Function.identity()));
 
-        // リレーションカラムリスト
-        List<GenerateColumn> relationColumns = new ArrayList<>();
+    List<GenerateColumn> relationColumns = new ArrayList<>();
+    Map<String, GenerateTable> generateTableMap = new LinkedHashMap<>();
+    Map<String, GenerateColumn> generateColumnMap = new LinkedHashMap<>();
 
-        // 依存関係グラフ
-        Map<String, GenerateTable> generateTableMap = new HashMap<>();
-        // 生成用カラムマップ
-        Map<String, GenerateColumn> generateColumnMap = new HashMap<>();
+    for (Table table : definitions.getTableDef().getTables()) {
+      String tableName = table.getName();
+      DataSpecTable dataSpecTable = dataSpecTableNameMap.getOrDefault(tableName, DataSpecTable.empty(tableName));
 
-        // 生成するテーブルは、データ仕様に記載されているもののみ
-        List<GenerateTable> generateTables = new ArrayList<>();
-        for (Table table : definitions.getTableDef().getTables()) {
+      GenerateTable generateTable = new GenerateTable(table, dataSpecTable);
+      if (dataSpecTable.getRowCount() == null) {
+        dataSpecTable.setRowCount(dataSpec.getDefaultRowCount());
+      }
+      int rowCount = (int) (dataSpec.getDefaultRowCount() * dataSpec.getScale());
+      generateTable.setRowCount(rowCount);
+      generateTable.setColumns(new ArrayList<>(table.getColumns().size()));
 
-            DataSpecTable dataSpecTable = dataSpecTableNameMap.getOrDefault(table.getName(), DataSpecTable.empty(table.getName()));
-            GenerateTable generateTable = new GenerateTable(table, dataSpecTable);
+      Map<String, DataSpecColumn> dataColumnMap = dataSpecTable.getColumns()
+          .stream()
+          .collect(Collectors.toMap(DataSpecColumn::getName, Function.identity()));
 
-            if (dataSpecTable.getRowCount() == null) {
-                dataSpecTable.setRowCount(dataSpec.getDefaultRowCount());
-            }
-            generateTable.setRowCount((int) (dataSpec.getDefaultRowCount() * dataSpec.getScale()));
-            generateTable.setColumns(new ArrayList<>());
+      for (Column column : table.getColumns()) {
+        String columnName = column.getName();
+        DataSpecColumn dataDataSpecColumn = dataColumnMap.getOrDefault(columnName, DataSpecColumn.empty(columnName));
 
-            Map<String, DataSpecColumn> dataColumnMap =
-                    dataSpecTable.getColumns().stream().collect(Collectors.toMap(c -> c.getName(), c -> c));
+        GenerateColumn generateColumn = new GenerateColumn(column, dataDataSpecColumn);
+        generateColumn.setOwnerTable(generateTable);
+        generateTable.getColumns().add(generateColumn);
+        generateColumnMap.put(String.join(".", tableName, columnName), generateColumn);
 
-            for (Column column : table.getColumns()) {
-                DataSpecColumn dataDataSpecColumn = dataColumnMap.getOrDefault(column.getName(), DataSpecColumn.empty(column.getName()));
-                GenerateColumn generateColumn = new GenerateColumn(column, dataDataSpecColumn);
-                generateColumn.setOwnerTable(generateTable);
-                generateTable.getColumns().add(generateColumn);
-                generateColumnMap.put(String.join(".", table.getName(), column.getName()), generateColumn);
-
-                // リレーションカラムを保持
-                if (!dataDataSpecColumn.isEmpty() &&
-                        dataDataSpecColumn.getType().getOptions() instanceof ReferenceOptions) {
-                    relationColumns.add(generateColumn);
-                }
-            }
-
-            generateTables.add(generateTable);
-            generateTableMap.put(generateTable.getName(), generateTable);
+        if (!dataDataSpecColumn.isEmpty() && dataDataSpecColumn.getType() instanceof ReferenceType) {
+          relationColumns.add(generateColumn);
         }
+      }
 
-        // 依存関係の解析
-        Map<GenerateTable, Set<GenerateTable>> dependencies = new HashMap<>();
-        for (GenerateColumn relationColumn : relationColumns) {
-
-            ReferenceOptions options = (ReferenceOptions) relationColumn.getDataSpecColumn().getType().getOptions();
-            GenerateTable childTable = relationColumn.getOwnerTable();
-
-            GenerateTable parentTable = generateTableMap.get(options.getReferencedTable());
-            childTable.setParentTable(parentTable);
-            parentTable.getChildTables().add(childTable);
-
-            GenerateColumn parentColumn = generateColumnMap.get(options.getFQDNReferencedColumnName());
-            relationColumn.setRelationParent(parentColumn);
-
-            // 親カラムのリレーション子リストに子カラムを追加
-            List<GenerateColumn> children = parentColumn.getRelationChildren();
-            children.add(relationColumn);
-
-            // 子と親の情報を連携
-            int rowCount = parentColumn.getOwnerTable().getDataSpecTable().getRowCount();
-            relationColumn.getOwnerTable().getDataSpecTable().setRowCount(rowCount);
-
-            dependencies.computeIfAbsent(parentTable, k -> new HashSet<>()).add(relationColumn.getOwnerTable());
-
-        }
-
-        // トポロジカルソートを実施して順序付け
-        List<GenerateTable> sortedGenerateTables = topologicalSort(generateTables, dependencies);
-
-        // リレーショングループのリストを作成
-        List<GenerateRelationGroup> relationGroups = new ArrayList<>();
-        relationGroups.add(new GenerateRelationGroup(sortedGenerateTables));
-
-        return relationGroups;
+      generateTableMap.put(tableName, generateTable);
     }
 
-    private static List<GenerateTable> topologicalSort(List<GenerateTable> tables,
-                                                       Map<GenerateTable, Set<GenerateTable>> dependencies) {
-        List<GenerateTable> sortedList = new ArrayList<>();
-        Set<GenerateTable> visited = new HashSet<>();
-        Set<GenerateTable> expanded = new HashSet<>();
+    relationColumns.forEach(relationColumn -> {
+      ReferenceType options = (ReferenceType) relationColumn.getDataSpecColumn().getType();
+      GenerateTable childTable = relationColumn.getOwnerTable();
+      GenerateTable parentTable = generateTableMap.get(options.getReferencedTable());
+      childTable.setParentTable(parentTable);
+      parentTable.getChildTables().add(childTable);
+      GenerateColumn parentColumn = generateColumnMap.get(options.getFQDNReferencedColumnName());
+      relationColumn.setRelationParent(parentColumn);
+      List<GenerateColumn> children = parentColumn.getRelationChildren();
+      children.add(relationColumn);
+      int rowCount = parentColumn.getOwnerTable().getDataSpecTable().getRowCount();
+      relationColumn.getOwnerTable().getDataSpecTable().setRowCount(rowCount);
+    });
 
-        for (GenerateTable table : tables) {
-            visit(table, visited, expanded, sortedList, dependencies);
-        }
+    GenerateRelationGroup singleGroup = new GenerateRelationGroup();
+    GenerateRelationGroup familyGroup = new GenerateRelationGroup();
 
-        Collections.reverse(sortedList);
-        return sortedList;
+    generateTableMap.values()
+        .stream()
+        .sorted()
+        .forEachOrdered(t -> {
+          if (t.getParentTable() == null && t.getChildTables().isEmpty()) {
+            singleGroup.getGenTables().add(t);
+          } else if (t.getParentTable() == null) {
+            familyGroup.getGenTables().add(t);
+          }
+        });
+
+    List<GenerateRelationGroup> relationGroups = List.of(singleGroup, familyGroup);
+    return relationGroups;
+  }
+
+  public static Set<GenerateTable> tree(GenerateTable table) {
+    Set<GenerateTable> set = new TreeSet<>();
+    set.add(table);
+    for (GenerateTable childTable : table.getChildTables()) {
+      set.add(childTable.getParentTable());
+      set.addAll(tree(childTable));
     }
-
-    private static void visit(GenerateTable table, Set<GenerateTable> visited,
-                              Set<GenerateTable> expanded, List<GenerateTable> sortedList,
-                              Map<GenerateTable, Set<GenerateTable>> dependencies) {
-        if (visited.contains(table)) {
-            if (!expanded.contains(table)) {
-                throw new IllegalArgumentException("Dependency cycle detected!");
-            }
-            return;
-        }
-
-        visited.add(table);
-
-        for (GenerateTable dep : dependencies.getOrDefault(table, Collections.emptySet())) {
-            visit(dep, visited, expanded, sortedList, dependencies);
-        }
-
-        expanded.add(table);
-        sortedList.add(table);
-    }
+    return set;
+  }
 }

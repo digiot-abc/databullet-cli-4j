@@ -4,16 +4,14 @@ import databullet.domain.definition.dataspec.DataSpecTable;
 import databullet.domain.definition.table.Table;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Data
-public class GenerateTable {
+public class GenerateTable implements Comparable<GenerateTable> {
 
   private GenerateTable parentTable;
 
-  private List<GenerateTable> childTables = new ArrayList<>();
+  private Collection<GenerateTable> childTables = new TreeSet<>();
 
   private List<GenerateColumn> columns;
 
@@ -47,4 +45,24 @@ public class GenerateTable {
   public int hashCode() {
     return name.hashCode();
   }
+
+  @Override
+  public int compareTo(GenerateTable o) {
+    if (this.parentTable == null && o.parentTable != null) {
+      return -1; // thisがparentTableがnullで、oがnullでない場合、thisを前に持ってくる
+    }
+    if (this.parentTable != null && o.parentTable == null) {
+      return 1; // thisがnullでなく、oがparentTableがnullの場合、thisを後に持ってくる
+    }
+
+    // 両方のparentTableがnullか、両方がnullでない場合、nameを基準に比較
+    int nameComparison = this.name.compareTo(o.name);
+    if (nameComparison != 0) {
+      return nameComparison;
+    }
+
+    // nameが同じ場合、列数で比較
+    return Integer.compare(this.columnCount, o.columnCount);
+  }
+
 }

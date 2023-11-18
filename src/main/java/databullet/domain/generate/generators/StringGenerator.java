@@ -1,22 +1,22 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
-import databullet.domain.definition.dataspec.options.StringOptions;
+import databullet.domain.definition.dataspec.types.StringType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-@GenerateOptions(StringOptions.class)
-public class StringGenerator extends Generator<String, StringOptions> {
+@GenerateOptions(StringType.class)
+public class StringGenerator extends Generator<String, StringType> {
 
   private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  public StringGenerator(StringOptions stringOptions) {
-    super(stringOptions);
+  public StringGenerator(StringType stringType) {
+    super(stringType);
   }
 
   @Override
   public String generate() {
 
-    int length = options.getLength();
+    int length = type.getLength();
 
     if (length <= 0) {
       return "";

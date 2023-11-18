@@ -1,17 +1,17 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
-import databullet.domain.definition.dataspec.options.DecimalOptions;
+import databullet.domain.definition.dataspec.types.DecimalType;
 
 import java.util.Random;
 
-@GenerateOptions(DecimalOptions.class)
-public class DecimalGenerator extends Generator<Double, DecimalOptions> {
+@GenerateOptions(DecimalType.class)
+public class DecimalGenerator extends Generator<Double, DecimalType> {
 
   private final long scaleFactor;
   private final long range;
   private final Random random = new Random();
 
-  public DecimalGenerator(DecimalOptions options) {
+  public DecimalGenerator(DecimalType options) {
     super(options);
     int digit = options.getDigit();
     int afterPointDigit = options.getAfterPointDigit();

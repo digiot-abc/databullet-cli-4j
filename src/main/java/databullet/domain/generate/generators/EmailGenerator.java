@@ -1,11 +1,11 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
-import databullet.domain.definition.dataspec.options.EmailOptions;
+import databullet.domain.definition.dataspec.types.EmailType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-@GenerateOptions(EmailOptions.class)
-public class EmailGenerator extends Generator<String, EmailOptions> {
+@GenerateOptions(EmailType.class)
+public class EmailGenerator extends Generator<String, EmailType> {
 
     private static final String ALPHANUMERIC = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -13,9 +13,9 @@ public class EmailGenerator extends Generator<String, EmailOptions> {
 
     private int totalLength;
 
-    public EmailGenerator(EmailOptions emailOptions) {
-        super(emailOptions);
-        this.totalLength = emailOptions.getLength();
+    public EmailGenerator(EmailType emailType) {
+        super(emailType);
+        this.totalLength = emailType.getLength();
     }
 
     public String generate() {

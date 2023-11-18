@@ -10,39 +10,31 @@
           "name": "id",
           "type": {
             "name": "sequence",
-            "options": {
-              "start": 100,
-              "increment": 5
-            }
+            "start": 100,
+            "increment": 5
           }
         },
         {
           "name": "user_id",
           "type": {
             "name": "reference",
-            "options": {
-              "referencedTable": "users",
-              "referencedColumn": "id"
-            }
+            "referencedTable": "users",
+            "referencedColumn": "id"
           }
         },
         {
           "name": "order_date",
           "type": {
             "name": "date",
-            "options": {
-              "format": "yyyy-MM-dd"
-            }
+            "format": "yyyy-MM-dd"
           }
         },
         {
           "name": "amount",
           "type": {
             "name": "int",
-            "options": {
-              "min": 100,
-              "max": 10000
-            }
+            "min": 100,
+            "max": 10000
           }
         }
       ]
@@ -55,19 +47,15 @@
           "name": "id",
           "type": {
             "name": "sequence",
-            "options": {
-              "start": 1,
-              "increment": 1
-            }
+            "start": 1,
+            "increment": 1
           }
         },
         {
           "name": "username",
           "type": {
             "name": "string",
-            "options": {
-              "length": 10
-            }
+            "length": 10
           }
         },
         {

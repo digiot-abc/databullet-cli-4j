@@ -1,17 +1,17 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
-import databullet.domain.definition.dataspec.options.PaddedNumberOptions;
+import databullet.domain.definition.dataspec.types.PaddedNumberType;
 
 import java.util.Random;
 
-@GenerateOptions(PaddedNumberOptions.class)
-public class PaddedNumberGenerator extends Generator<String, PaddedNumberOptions> {
+@GenerateOptions(PaddedNumberType.class)
+public class PaddedNumberGenerator extends Generator<String, PaddedNumberType> {
 
     private final int totalLength;
     private final long maxValue;
     private final Random random = new Random();
 
-    public PaddedNumberGenerator(PaddedNumberOptions options) {
+    public PaddedNumberGenerator(PaddedNumberType options) {
         super(options);
         this.totalLength = options.getTotalLength();
         this.maxValue = (long) Math.pow(10, options.getDigits()) - 1;

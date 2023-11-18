@@ -1,20 +1,20 @@
-package databullet.domain.generate.generator;
+package databullet.domain.generate.generators;
 
-import databullet.domain.definition.dataspec.options.IntOptions;
+import databullet.domain.definition.dataspec.types.IntType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-@GenerateOptions(IntOptions.class)
-public class IntGenerator extends Generator<Integer, IntOptions> {
+@GenerateOptions(IntType.class)
+public class IntGenerator extends Generator<Integer, IntType> {
 
   private long min;
   private long max;
   private final ThreadLocalRandom random;
 
-  public IntGenerator(IntOptions intOptions) {
-    super(intOptions);
-    this.min = intOptions.getMin();
-    this.max = intOptions.getMax();
+  public IntGenerator(IntType intType) {
+    super(intType);
+    this.min = intType.getMin();
+    this.max = intType.getMax();
     this.random = ThreadLocalRandom.current();
   }
 

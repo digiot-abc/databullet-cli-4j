@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GenerateRelationGroup {
 
-    private List<GenerateTable> genTables = new ArrayList<>();
+    private Collection<GenerateTable> genTables = new TreeSet<>();
 }
