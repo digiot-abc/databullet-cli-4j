@@ -6,6 +6,8 @@ import databullet.domain.definition.generate.GenerateTable;
 import databullet.domain.generate.generators.Generator;
 import databullet.domain.generate.persistance.Persistence;
 import lombok.SneakyThrows;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +15,11 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 public class GenerateProcessor {
+
+  private static final Logger logger = LogManager.getLogger(GenerateProcessor.class);
 
   GenerateStore store;
 
@@ -66,14 +71,24 @@ public class GenerateProcessor {
         futureList.add(CompletableFuture.supplyAsync(() -> {
           store.setCurrentProcessing(column, index);
 
-          if (column.hasParent() && !store.existsColumnValue(column.getRelationParent(), index)) {
+          // 自身の親カラムの値が生成されていなかった場合、親カラムとそのカラムに紐づく子カラムすべてに同じ値を設定する
+          if (column.hasParent() &&
+                  !store.isFinished(column.getRelationParent().getOwnerTable()) &&
+                  !store.existsColumnValue(column.getRelationParent(), index)) {
+
             Object value = generate(column.getRelationParent(), store);
+            logger.debug(() -> generateDataLogSupplier(index, rowLimit, column, column.getRelationParent(), "関連親カラムの値が不明", value).get());
+
             store.registerColumnValue(column.getRelationParent(), value);
+            // カラムの値生成後、自身の子カラムすべてに再帰的に値を設定する
             store.setRelationValueRecursiveChildren(column.getRelationParent(), value);
           }
 
+          // 自身のカラムの値生成後、自身の子カラムすべてに再帰的に値を設定する
           Object value = generate(column, store);
+          logger.debug(() -> generateDataLogSupplier(index, rowLimit, column, column, "Generatorによる生成", value).get());
           store.setRelationValueRecursiveChildren(column, value);
+
           return value.toString();
         }, executorService));
       }
@@ -128,5 +143,9 @@ public class GenerateProcessor {
     int startIndex = batchSize > rowLimit ? 0 : rowLimit + 1 - batchSize;
     generateTable.getChildTables().stream().parallel()
             .forEach(c -> generate(c, persistence, Executors.newFixedThreadPool(c.getColumnCount()), startIndex, c.getRowCount() > rowLimit ? c.getRowCount() : rowLimit));
+  }
+
+  static Supplier<String> generateDataLogSupplier(int index, int rowLimit, GenerateColumn triggerColumn, GenerateColumn generatedColumn, String message, Object value) {
+    return () -> "行[" + (index + 1) + "/" + rowLimit  + "]\t" + "契機[" + triggerColumn.getFullName() + "](" + message + "), " + "生成[" + generatedColumn.getFullName() + "], " + "値[" + value.toString() + "]";
   }
 }

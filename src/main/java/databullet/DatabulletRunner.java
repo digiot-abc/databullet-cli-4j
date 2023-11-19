@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class DatabulletRunner {
 
   public static void main(String... args) throws Exception {
-    System.exit(new DatabulletRunner().execute());
+    System.exit(new DatabulletRunner().execute2());
   }
 
   public int execute() throws Exception {

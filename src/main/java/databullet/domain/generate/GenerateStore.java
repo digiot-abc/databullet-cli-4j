@@ -54,7 +54,7 @@ public class GenerateStore {
     }
 
     public void registerColumnValue(GenerateColumn column, Object value) {
-        relationColumnValuesMap.putIfAbsent(column, new LinkedList<>());
+        relationColumnValuesMap.putIfAbsent(column, new ArrayList<>());
         relationColumnValuesMap.get(column).add(value);
     }
 
@@ -62,9 +62,7 @@ public class GenerateStore {
         if (!relationColumnValuesMap.containsKey(column)) {
             return false;
         }
-        int size = column.getOwnerTable().getRowCount();
-        System.out.println(index + ": " + (index % size));
-        return size > index % size;
+        return relationColumnValuesMap.get(column).size() > index;
     }
 
     public Object getColumnValueOrDefault(GenerateColumn column, Integer index, Supplier<Object> supplier) {
@@ -72,12 +70,12 @@ public class GenerateStore {
             return supplier.get();
         }
         List<Object> values = relationColumnValuesMap.get(column);
-        return values.get(index % (values.size() - 1));
+        return values.get(index % (values.size()));
     }
 
     public Object getColumnValue(GenerateColumn column, Integer index) {
         List<Object> values = relationColumnValuesMap.get(column);
-        return values.get(index % (values.size() - 1));
+        return values.get(index % (values.size()));
     }
 
     public void setRelationValueRecursiveChildren(GenerateColumn column, Object value) {

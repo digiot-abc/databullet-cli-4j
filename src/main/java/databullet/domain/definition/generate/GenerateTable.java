@@ -21,6 +21,8 @@ public class GenerateTable implements Comparable<GenerateTable> {
 
   private Integer columnCount;
 
+  private Integer relationSinkLevel = 0;
+
   private Table table;
 
   private DataSpecTable dataSpecTable;
@@ -48,19 +50,20 @@ public class GenerateTable implements Comparable<GenerateTable> {
 
   @Override
   public int compareTo(GenerateTable o) {
-    if (this.parentTable == null && o.parentTable != null) {
-      return -1; // thisがparentTableがnullで、oがnullでない場合、thisを前に持ってくる
+
+    // 深さで比較
+    int depthComparison = Integer.compare(this.relationSinkLevel, o.relationSinkLevel);
+    if (depthComparison != 0) {
+      return depthComparison;
     }
-    if (this.parentTable != null && o.parentTable == null) {
-      return 1; // thisがnullでなく、oがparentTableがnullの場合、thisを後に持ってくる
-    }
-    // 両方のparentTableがnullか、両方がnullでない場合、nameを基準に比較
+
+    // 名前で比較
     int nameComparison = this.name.compareTo(o.name);
     if (nameComparison != 0) {
       return nameComparison;
     }
-    // nameが同じ場合、列数で比較
+
+    // 列数で比較
     return Integer.compare(this.columnCount, o.columnCount);
   }
-
 }

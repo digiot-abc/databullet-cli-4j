@@ -16,7 +16,7 @@ public class ReferenceGenerator extends Generator<String, ReferenceType> {
     public String generate(GenerateStore store) {
         GenerateColumn column = store.getProcessingColumns().get();
         int index = store.getProcessingRowIndex().get();
-        Object value = store.getColumnValue(column, index);
+        Object value = store.getColumnValueOrDefault(column, index, () -> "not found ".concat(column.getRelationParent().getFullName()).concat(" value."));
         return value.toString();
     }
 }
